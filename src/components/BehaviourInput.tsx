@@ -7,20 +7,20 @@ const coordinateToIndex = (coordinate: string): number => {
   const x = coordinate.charCodeAt(0) - 'a'.charCodeAt(0); // a -> 0, b -> 1, ...
   const y = 8 - parseInt(coordinate[1]); // 8 - y, because the 8th rank is y = 0
 
-  return 8 * y + x;
+  return 16 * y + x;
 };
 
 const directionMap = {
   E: 1,
-  S: 8,
+  S: 16,
   W: -1,
-  N: -8,
+  N: -16,
 } as const;
 
 /* 
   Combine a direction string into offset number, following the map above. Example:
-  N     -> -8
-  NNE   -> -15
+  N     -> -16
+  SSW   -> 31
 */
 const parseDirection = (direction: string): number => {
   return direction

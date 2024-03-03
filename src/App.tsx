@@ -2,16 +2,13 @@ import { useState } from 'react';
 import Board from './components/Board';
 import { BehaviourTextArea } from './components/BehaviourInput';
 
-export const isInBounds = (index: number, offset: number) => {
-  if (index < 0 || 63 < index) return false
-
-
-  const [x0, y0] = [index % 8, ~~(index / 8)];
-  const [dx, dy] = [offset % 8, ~~(offset / 8)];
-
-  const [x1, y1] = [x0 + dx, y0 + dy];
-
-  return 0 <= x1 && x1 < 8 && 0 <= y1 && y1 < 8;
+/* 
+  Include the first square in padding (for viewing purposes), but b
+*/
+const isInBounds = (index: number) => {
+  if (index < 0 || 127 < index) return false
+  const x = index % 16
+  return x < 8
 };
 
 function App() {
@@ -20,7 +17,6 @@ function App() {
   const [beam, setBeam] = useState(false);
 
   const greenCircles = directions
-    .filter((direction) => isInBounds(elephantIndex, direction))
     .map((direction) => elephantIndex + direction);
 
   const grayCircles: number[] = [];
@@ -28,14 +24,16 @@ function App() {
   beam &&
     directions.forEach((direction) => {
       let square = elephantIndex;
-      while (isInBounds(square, direction)) {
+      while (true) {
         square += direction;
         grayCircles.push(square);
+        if (!isInBounds(square)) return
       }
     });
 
+
   return (
-    <div className='py-20 px-40 flex gap-40 h-screen'>
+    <div className='flex p-20 gap-10 h-screen'>
       <Board
         elephantIndex={elephantIndex}
         green={greenCircles}

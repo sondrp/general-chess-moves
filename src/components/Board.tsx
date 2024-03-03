@@ -15,8 +15,8 @@ export default function Board(props: BoardProps) {
       <div className='flex'>
         <CoordinateNumbers />
         <div className='relative'>
-          <div className='grid grid-cols-8 w-fit h-fit'>
-            {Array.from({ length: 64 }, (_, index) => (
+          <div className='grid grid-cols-16 w-fit h-fit'>
+            {Array.from({ length: 128 }, (_, index) => (
               <Square key={index} index={index}>
                 {(elephantIndex === index && (
                   <img className='p-2' src={elephantImg} alt='elephant piece' />
@@ -42,7 +42,7 @@ function CoordinateNumbers() {
     <div className='flex flex-col w-4'>
       {Array.from({ length: 8 }, (_, i) => (
         <div
-          className='h-20 flex items-center text-slate-400 text-opacity-70'
+          className='grow flex items-center text-slate-400 text-opacity-70'
           key={i}
         >
           {8 - i}
