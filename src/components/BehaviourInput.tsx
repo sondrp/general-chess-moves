@@ -109,7 +109,7 @@ export function BehaviourTextArea(props: BehaviourProps) {
           onKeyDown={handleEnter}
           onChange={handleInputChange}
           spellCheck='false'
-          className='border-2 px-1 resize-none w-80 h-80 outline-none leading-8'
+          className='border-2 px-1 resize-none h-80 outline-none leading-8 w-full'
         />
       </div>
     </div>

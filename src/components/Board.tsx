@@ -1,14 +1,29 @@
 import Square from './Square';
 import elephantImg from '../assets/e.png';
+import { useState } from 'react';
+import BoardTextArea from './FenTextArea';
 
 type BoardProps = {
   elephantIndex: number;
   green?: number[];
   gray?: number[];
+  selectedSquare: number
+  setSelectedSquare: (index: number) => void
 };
 
 export default function Board(props: BoardProps) {
-  const { elephantIndex, green, gray } = props;
+  const { elephantIndex, green, gray, selectedSquare, setSelectedSquare } = props;
+
+
+  const [board, setBoard] = useState(' '.repeat(64));
+  const [fen, setFen] = useState('TODO')
+
+
+
+  const handleSquareClick = (index: number) => {
+    setSelectedSquare(index)
+  }
+
 
   return (
     <div>
@@ -17,7 +32,7 @@ export default function Board(props: BoardProps) {
         <div className='relative'>
           <div className='grid grid-cols-16 w-fit h-fit'>
             {Array.from({ length: 128 }, (_, index) => (
-              <Square key={index} index={index}>
+              <Square selected={selectedSquare} key={index} index={index} handleClick={() => setSelectedSquare(index)}>
                 {(elephantIndex === index && (
                   <img className='p-2' src={elephantImg} alt='elephant piece' />
                 )) ||
@@ -33,9 +48,11 @@ export default function Board(props: BoardProps) {
         </div>
       </div>
       <CoordinateLetters />
+      <BoardTextArea fen={fen} setFen={setFen} />
     </div>
   );
 }
+
 
 function CoordinateNumbers() {
   return (
@@ -57,12 +74,13 @@ function CoordinateLetters() {
     <div className='flex px-4'>
       {'abcdefgh'.split('').map((letter) => (
         <div
-          className='text-slate-400 text-opacity-70 w-20 text-center'
+          className='text-slate-400 text-opacity-70 w-10 xl:w-16 text-center'
           key={letter}
         >
           {letter}
         </div>
       ))}
+      <div className='w-80 xl:w-[32rem]'></div>
     </div>
   );
 }
