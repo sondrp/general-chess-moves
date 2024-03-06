@@ -1,14 +1,5 @@
 import { ChangeEvent, useState } from 'react';
-
-
-const coordinateToIndex = (coordinate: string): number => {
-  if (!/[a-h][1-8]/.exec(coordinate)) return -1;
-
-  const x = coordinate.charCodeAt(0) - 'a'.charCodeAt(0); // a -> 0, b -> 1, ...
-  const y = 8 - parseInt(coordinate[1]); // 8 - y, because the 8th rank is y = 0
-
-  return 16 * y + x;
-};
+import { Move } from './Board';
 
 const directionMap = {
   E: 1,
@@ -32,41 +23,39 @@ const parseDirection = (direction: string): number => {
     );
 };
 
-
+const thing = {
+  never: /gg/,
+  white: /[RNBQKP]/,
+  black: /[rnbqkp]/,
+  enemies: /[RNBQKP][rnbqkpe]|[rnbqkpe][RNBQKP]/,
+  friends: /[RNBQKP][RNBQKP]|[rnbqkpe][rnbqkpe]/,
+  notEnemies: /[RNBQKP][rnbqkpe ]|[rnbqkpe][RNBQKP ]/,
+  notFriends: /[RNBQKP][RNBQKP ]|[rnbqkpe][rnbqkpe ]/,
+} as const;
 
 type BehaviourProps = {
-  setElephant: (index: number) => void;
-  setDirections: (directions: number[]) => void;
-  setBeam: (beam: boolean) => void;
+  setDirections: (mvoes: Move[]) => void;
 };
 
-/* Interface between the user and program: handles nothing but conversion from text input to usable data. */
+const defaultMove = `N: {
+    stop: friends,
+    addBreak: enemies
+  },
+`;
 
 export function BehaviourTextArea(props: BehaviourProps) {
-  const { setElephant, setDirections, setBeam } = props;
+  const { setDirections } = props;
 
+  const [text, setText] = useState(defaultMove);
   const [changed, setChanged] = useState(false);
-  const [text, setText] = useState('position = \ndirections = \nbeam = false');
 
   const applyChanges = () => {
     setChanged(false);
+    const moves: Move[] = Object.entries(JSON.parse(text)).map(
+      ([key, value]) => ({ [parseDirection(key)]: value } as Move)
+    );
 
-    const positionMatch = /position.*?(\b[a-h][1-8]\b)/.exec(text); // Extract the position of the elephant
-    const directionsMatch = text.match(/[ESWN]+/g);
-    const beamMatch = /beam.*(true)/i.exec(text);
-
-    const index = positionMatch ? coordinateToIndex(positionMatch[1]) : -1;
-    setElephant(index);
-
-    const directions =
-      directionsMatch
-        ?.map(parseDirection)
-        ?? [];
-    setDirections(directions);
-
-    console.log(directions)
-
-    setBeam(!!beamMatch);
+    setDirections(moves);
   };
 
   const handleInputChange = (e: ChangeEvent<HTMLTextAreaElement>) => {

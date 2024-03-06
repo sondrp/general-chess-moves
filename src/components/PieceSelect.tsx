@@ -1,18 +1,17 @@
-function getImgUrl(name: string) {
-  return new URL(`${name}`, import.meta.url).href;
+export function getImgUrl(name: string) {
+  return new URL(`../assets/${name}.png`, import.meta.url).href;
 }
 
-import e from '../assets/e.png';
 
 const pieces = ['k', 'q', 'r', 'b', 'n', 'p'];
 
-export default function PieceSelect({
-  handleSelect,
-  selectedSquare
-}: {
+type PieceSelectProps = {
   handleSelect: (piece: string) => void;
   selectedSquare: number
-}) {
+}
+
+export default function PieceSelect(props: PieceSelectProps) {
+  const { handleSelect, selectedSquare } = props
   return (
     <div className='p-10 w-[30rem] bg-slate-100 rounded-b-md border-slate-200 border-2 h-fit flex flex-col gap-4'>
       <div className='flex items-center justify-between'>
@@ -22,7 +21,7 @@ export default function PieceSelect({
       <div className='flex items-center justify-between'>
         <div className='font-bold text-slate-600 text-opacity-80'>Special:</div>
         <button onClick={() => handleSelect('e')}>
-          <img className='size-10' src={e} alt='select elephant ' />
+          <img className='size-10' src={getImgUrl('e')} alt='select elephant ' />
         </button>
       </div>
 
@@ -36,7 +35,7 @@ export default function PieceSelect({
             >
               <img
                 className='size-10'
-                src={getImgUrl(`../assets/w${piece}.png`)}
+                src={getImgUrl(`w${piece}`)}
                 alt={piece}
               />
             </button>
@@ -51,7 +50,7 @@ export default function PieceSelect({
             <button onClick={() => handleSelect(piece)} key={piece}>
               <img
                 className='size-10'
-                src={getImgUrl(`../assets/b${piece}.png`)}
+                src={getImgUrl(`b${piece}`)}
                 alt={piece}
               />
             </button>
