@@ -100,6 +100,8 @@ function moveCalculator(board: string[], startSquare: number, movesets: Moveset)
         while (isInBounds(square)) {
           let text = board[startSquare] + board[square];
           
+          console.log(stop.test(text))
+
           if (stop.test(text)) break;
 
           if (boardBefore && !boardBefore.test(boardstringBefore)) break

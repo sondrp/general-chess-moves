@@ -3,11 +3,11 @@ const never = /g/;
 const always = /./;
 const occupied = /.\w/;
 
-const enemies = /[RNBQKP][rnbqkpe]|[rnbqkpe][RNBQKP]/;
-const friends = /[RNBQKP][RNBQKP]|[rnbqkpe][rnbqkpe]/;
+const enemies = /[A-Z][a-z]|[a-z][A-Z]/;
+const friends = /[A-Z][A-Z]|[a-z][a-z]/;
 
-// Used for pawn: must exclude attacking moves if they are not enemies (empty squares are not accepted)
-const notEnemies = /[RNBQKP][rnbqkpe ]|[rnbqkpe][RNBQKP ]/;
+// Includes square occupied by enemy only
+const notEnemies = /[A-Z][A-Z ]|[a-z][a-z ]/;
 
 // For white pawn
 const clearNorth = / .{15}$/;
