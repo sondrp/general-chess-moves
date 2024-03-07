@@ -1,5 +1,6 @@
 import { ChangeEvent, useState } from 'react';
-import { Move } from './Board';
+import { Moveset } from '../utils/movesets';
+
 
 const directionMap = {
   E: 1,
@@ -13,7 +14,7 @@ const directionMap = {
   N     -> -16
   SSW   -> 31
 */
-const parseDirection = (direction: string): number => {
+export const parseDirection = (direction: string): number => {
   return direction
     .split('')
     .reduce(
@@ -34,14 +35,15 @@ const thing = {
 } as const;
 
 type BehaviourProps = {
-  setDirections: (mvoes: Move[]) => void;
+  setDirections: (moves: Moveset[]) => void;
 };
 
-const defaultMove = `N: {
-    stop: friends,
-    addBreak: enemies
-  },
-`;
+const defaultMove = `{
+  "N": {
+    "stop": "friends",
+    "addBreak": "enemies"
+  }
+}`;
 
 export function BehaviourTextArea(props: BehaviourProps) {
   const { setDirections } = props;
@@ -51,8 +53,8 @@ export function BehaviourTextArea(props: BehaviourProps) {
 
   const applyChanges = () => {
     setChanged(false);
-    const moves: Move[] = Object.entries(JSON.parse(text)).map(
-      ([key, value]) => ({ [parseDirection(key)]: value } as Move)
+    const moves: Moveset[] = Object.entries(JSON.parse(text)).map(
+      ([key, value]) => ({ [parseDirection(key)]: value } as Moveset)
     );
 
     setDirections(moves);

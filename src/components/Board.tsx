@@ -2,6 +2,8 @@ import Square from './Square';
 import { useState } from 'react';
 import FenTextArea from './FenTextArea';
 import { getPieceImage } from '../utils/getPieceImage';
+import { Moveset, chancellor, king, pawn, queen, rook } from '../utils/movesets';
+import { parseDirection } from './BehaviourInput';
 
 type BoardProps = {
   directions: number[];
@@ -19,7 +21,7 @@ export default function Board(props: BoardProps) {
 
   const [board, setBoard] = useState<string[]>(defaultBoard);
 
-  const moves = moveCalculator(board, selectedSquare);
+  const moves = moveCalculator(board, selectedSquare, pawn);
 
   const handleSquareClick = (index: number) => {
     setBoard((oldBoard) => {
@@ -51,7 +53,7 @@ export default function Board(props: BoardProps) {
                   />
                 )}
                 {moves?.includes(index) && (
-                  <div className='h-4 w-4 rounded-full bg-gray-500 absolute z-10'></div>
+                  <div className='h-4 w-4 rounded-full bg-opacity-50 bg-green-600 absolute z-10'></div>
                 )}
               </Square>
             ))}
@@ -70,66 +72,32 @@ const isInBounds = (index: number) => {
   return x < 8;
 };
 
-const never = /gg/;
-const white = /[RNBQKP]/;
-const black = /[rnbqkp]/;
 
-const enemies = /[RNBQKP][rnbqkpe]|[rnbqkpe][RNBQKP]/;
-const friends = /[RNBQKP][RNBQKP]|[rnbqkpe][rnbqkpe]/;
-
-const notEnemies = /[RNBQKP][rnbqkpe ]|[rnbqkpe][RNBQKP ]/;
-const notFriends = /[RNBQKP][RNBQKP ]|[rnbqkpe][rnbqkpe ]/;
-
-type Condition = {
-  stop: RegExp;
-  addBreak: RegExp;
-};
-
-export type Move = {
-  [key: number]: Condition;
-};
-
-const directions: Move = {
-  '-16': {
-    stop: friends,
-    addBreak: enemies,
-  },
-  1: {
-    stop: friends,
-    addBreak: enemies,
-  },
-  16: {
-    stop: friends,
-    addBreak: notFriends,
-  },
-  '-1': {
-    stop: friends,
-    addBreak: notFriends,
-  },
-};
-
-function moveCalculator(board: string[], startSquare: number) {
+function moveCalculator(board: string[], startSquare: number, movesets: Moveset) {
   const moves: number[] = [];
+  console.log('s' + board.join('').substring(0, startSquare) + 's')
 
-  Object.entries(directions).forEach((direction) => {
-    const [d, { stop, addBreak }] = direction;
-    const offset = parseInt(d);
-    let square = startSquare + offset;
+    movesets.forEach(moveset => {
+      const offsets = moveset.directions.map(d => parseDirection(d))
+      const { stop, addBreak, boardState } = moveset.condition
 
-    while (isInBounds(square)) {
-      let text = board[startSquare] + board[square];
+      offsets.map(offset => {
+        let square = startSquare + offset;
+        
+        while (isInBounds(square)) {
+          let text = board[startSquare] + board[square];
+          
+          if (stop.test(text)) break;
+          if (boardState && !boardState?.test(board.join('').substring(0, startSquare))) break
+          
+          moves.push(square);
+          square += offset;
+          
+          if (addBreak.test(text)) break;
+        }
+      })
+    })
 
-      if (stop.test(text)) break;
-
-      if (addBreak.test(text)) {
-        moves.push(square);
-        break;
-      }
-
-      moves.push(square);
-      square += offset;
-    }
-  });
   return moves;
 }
 
