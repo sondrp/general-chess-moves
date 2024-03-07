@@ -1,28 +1,50 @@
-
 // Good luck debugging this...
-
-const white = /[RNBQKP]/;
-const black = /[rnbqkpe]/;
-
-const always = /../
-const never = /gg/;
-
-const empty = /. /;
-const occupied = /.\w/
+const never = /g/;
+const always = /./;
+const occupied = /.\w/;
 
 const enemies = /[RNBQKP][rnbqkpe]|[rnbqkpe][RNBQKP]/;
 const friends = /[RNBQKP][RNBQKP]|[rnbqkpe][rnbqkpe]/;
 
+// Used for pawn: must exclude attacking moves if they are not enemies (empty squares are not accepted)
 const notEnemies = /[RNBQKP][rnbqkpe ]|[rnbqkpe][RNBQKP ]/;
-const notFriends = /[RNBQKP][RNBQKP ]|[rnbqkpe][rnbqkpe ]/;
 
+// For white pawn
+const clearNorth = / .{15}$/;
+const secondRow = /^.{24,31}$/; // end of the string
+const fourthRow = /^.{49,56}$/; // start of the string
+const fourthRowBlackPawn = /^.{48,55}p$/; // start of the string
+const blackPawnRight = /^p/;
 
-const secondRow = /^.{64,71}( ).{15}( ).{15}$/
+// For black pawn
+const seventhRow = /^.{16,23}$/;
+const clearSouth = /^.{15} /;
+const fourthRowPawnRight = /^P.{56,62}$/; // en passant to the right
+const fourthRowPawnLeft = /^.{64,70}P$/; // en passant to the left
+
+const whiteCastleRight = /^  Rx{8}$/;
+const whiteCastleLeft = /R   $/;
+const whiteKingHome = /^...x{8}$/;
+
+const blackCastleRight = /  r/;
+const blackCastleLeft = /^r   $/;
+const blackKingHome = /^....$/;
 
 type Condition = {
   stop: RegExp;
   addBreak: RegExp;
-  boardState?: RegExp
+  boardBefore?: RegExp;
+  boardAfter?: RegExp;
+};
+
+const beam: Condition = {
+  stop: friends,
+  addBreak: enemies,
+};
+
+const hop: Condition = {
+  stop: friends,
+  addBreak: always,
 };
 
 export type Moveset = {
@@ -30,73 +52,196 @@ export type Moveset = {
   condition: Condition;
 }[];
 
-export const rook: Moveset = [
+export const rookMoveset: Moveset = [
   {
     directions: ['E', 'S', 'W', 'N'],
+    condition: beam,
+  },
+];
+
+export const knightMoveset: Moveset = [
+  {
+    directions: ['NNE', 'EEN', 'EES', 'SSE', 'SSW', 'WWS', 'WWN', 'NNW'],
+    condition: hop,
+  },
+];
+
+export const bishopMoveset: Moveset = [
+  {
+    directions: ['NE', 'SE', 'SW', 'NW'],
+    condition: beam,
+  },
+];
+
+export const queenMoveset: Moveset = [
+  {
+    directions: ['NE', 'E', 'SE', 'S', 'SW', 'W', 'NW', 'N'],
+    condition: beam,
+  },
+];
+
+export const whitekingMoveset: Moveset = [
+  {
+    directions: ['NE', 'E', 'SE', 'S', 'SW', 'W', 'NW', 'N'],
+    condition: hop,
+  },
+  {
+    directions: ['EE'],
     condition: {
-      stop: friends,
-      addBreak: enemies,
+      stop: never,
+      addBreak: always,
+      boardAfter: whiteCastleRight,
+    },
+  },
+  {
+    directions: ['WW'],
+    condition: {
+      stop: never,
+      addBreak: always,
+      boardAfter: whiteKingHome,
+      boardBefore: whiteCastleLeft,
     },
   },
 ];
 
-export const king: Moveset = [
+export const blackkingMoveset: Moveset = [
   {
     directions: ['NE', 'E', 'SE', 'S', 'SW', 'W', 'NW', 'N'],
+    condition: hop,
+  },
+  {
+    directions: ['EE'],
     condition: {
-      stop: friends,
+      stop: never,
+      addBreak: always,
+      boardBefore: blackKingHome,
+      boardAfter: blackCastleRight,
+    },
+  },
+  {
+    directions: ['WW'],
+    condition: {
+      stop: never,
+      addBreak: always,
+      boardBefore: blackCastleLeft,
+    },
+  },
+];
+
+export const whitepawnMoveset: Moveset = [
+  {
+    directions: ['NE', 'NW'],
+    condition: {
+      stop: notEnemies,
       addBreak: always,
     },
   },
-];
-export const queen: Moveset = [
   {
-    directions: ['NE', 'E', 'SE', 'S', 'SW', 'W', 'NW', 'N'],
+    directions: ['N'],
     condition: {
-      stop: friends,
-      addBreak: enemies,
+      stop: occupied,
+      addBreak: always,
+    },
+  },
+  {
+    directions: ['NN'],
+    condition: {
+      stop: occupied,
+      addBreak: always,
+      boardBefore: clearNorth,
+      boardAfter: secondRow,
+    },
+  },
+  {
+    directions: ['NE'], // En passant: must be on the fourth row, and there must be a pawn to the right
+    condition: {
+      stop: occupied,
+      addBreak: always,
+      boardBefore: fourthRow,
+      boardAfter: blackPawnRight,
+    },
+  },
+  {
+    directions: ['NW'], // En passant: must be on the fourth row, and there must be a pawn to the right
+    condition: {
+      stop: occupied,
+      addBreak: always,
+      boardBefore: fourthRowBlackPawn,
     },
   },
 ];
-export const chancellor: Moveset = [
+
+export const blackpawnMoveset: Moveset = [
   {
-    directions: ['E', 'S', 'W', 'N'],
+    directions: ['SE', 'SW'],
     condition: {
-      stop: friends,
-      addBreak: enemies,
+      stop: notEnemies,
+      addBreak: always,
     },
+  },
+  {
+    directions: ['S'],
+    condition: {
+      stop: occupied,
+      addBreak: always,
+    },
+  },
+  {
+    directions: ['SS'],
+    condition: {
+      stop: occupied,
+      addBreak: always,
+      boardBefore: seventhRow,
+      boardAfter: clearSouth,
+    },
+  },
+  {
+    directions: ['SE'],
+    condition: {
+      stop: occupied,
+      addBreak: always,
+      boardAfter: fourthRowPawnRight,
+    },
+  },
+  {
+    directions: ['SW'],
+    condition: {
+      stop: occupied,
+      addBreak: always,
+      boardBefore: fourthRowPawnLeft,
+    },
+  },
+];
+
+export const archBishopMoveset: Moveset = [
+  {
+    directions: ['NE', 'SE', 'SW', 'NW'],
+    condition: beam,
   },
   {
     directions: ['NNE', 'EEN', 'EES', 'SSE', 'SSW', 'WWS', 'WWN', 'NNW'],
-    condition: {
-      stop: friends,
-      addBreak: always,
-    },
+    condition: hop,
   },
 ];
 
-export const pawn: Moveset = [
-    {
-        directions: ['NE', 'NW'],
-        condition: {
-            stop: notEnemies,
-            addBreak: always
-        }
-    },
-    {
-        directions: ['N'],
-        condition: {
-            stop: occupied,
-            addBreak: always
-        }
-    },
-    {
-        directions: ['NN'],
-        condition: {
-            stop: occupied,
-            addBreak: always,
-            boardState: secondRow 
-        }
-    },
+export const chancellorMoveset: Moveset = [
+  {
+    directions: ['E', 'S', 'W', 'N'],
+    condition: beam,
+  },
+  {
+    directions: ['NNE', 'EEN', 'EES', 'SSE', 'SSW', 'WWS', 'WWN', 'NNW'],
+    condition: hop,
+  },
+]
 
+export const amazonMoveset: Moveset = [
+  {
+    directions: ['NE', 'E', 'SE', 'S', 'SW', 'W', 'NW', 'N'],
+    condition: beam,
+  },
+  {
+    directions: ['NNE', 'EEN', 'EES', 'SSE', 'SSW', 'WWS', 'WWN', 'NNW'],
+    condition: hop,
+  },
 ]

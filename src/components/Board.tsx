@@ -1,37 +1,45 @@
 import Square from './Square';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import FenTextArea from './FenTextArea';
 import { getPieceImage } from '../utils/getPieceImage';
-import { Moveset, chancellor, king, pawn, queen, rook } from '../utils/movesets';
-import { parseDirection } from './BehaviourInput';
+import { Moveset } from '../utils/movesets';
 
 type BoardProps = {
-  directions: number[];
+  piece: string
+  moveset: Moveset;
   selectedSquare: number;
   setSelectedSquare: (index: number) => void;
 };
 
 // Empty board with padding (128 squares)
 const defaultBoard =
-  'e   R   xxxxxxxx    R   xxxxxxxx        xxxxxxxx        xxxxxxxx        xxxxxxxx        xxxxxxxx        xxxxxxxxr       xxxxxxxx'
+  'K   R   xxxxxxxx    R   xxxxxxxx        xxxxxxxx        xxxxxxxx        xxxxxxxx        xxxxxxxx        xxxxxxxxr       xxxxxxxx'
   .split('');
 
 export default function Board(props: BoardProps) {
-  const { directions, selectedSquare, setSelectedSquare } = props;
+  const { piece, moveset, selectedSquare, setSelectedSquare } = props;
 
   const [board, setBoard] = useState<string[]>(defaultBoard);
 
-  const moves = moveCalculator(board, selectedSquare, pawn);
+  const moves = moveCalculator(board, selectedSquare, moveset);
 
   const handleSquareClick = (index: number) => {
+    updateBoard(index)
+    setSelectedSquare(index);
+  };
+  
+  useEffect(() => {
+    updateBoard(selectedSquare)
+  }, [piece])
+
+  const updateBoard = (index: number) => {
     setBoard((oldBoard) => {
       const newBoard = [...oldBoard];
       newBoard[selectedSquare] = ' ';
-      newBoard[index] = 'e';
+      newBoard[index] = piece;
       return newBoard;
     });
-    setSelectedSquare(index);
-  };
+  }
 
   return (
     <div>
@@ -45,7 +53,7 @@ export default function Board(props: BoardProps) {
                 index={index}
                 handleClick={() => handleSquareClick(index)}
               >
-                {/[ernbqkp]/i.test(board[index]) && (
+                {/[ernbqkpcza]/i.test(board[index]) && (
                   <img
                     className='p-2'
                     src={getPieceImage(board[index])}
@@ -75,11 +83,16 @@ const isInBounds = (index: number) => {
 
 function moveCalculator(board: string[], startSquare: number, movesets: Moveset) {
   const moves: number[] = [];
-  console.log('s' + board.join('').substring(0, startSquare) + 's')
+  const boardstring = board.join('')
+  const boardstringBefore = boardstring.substring(0, startSquare)
+  const boardstringAfter = boardstring.substring(startSquare + 1)
+
+  console.log(boardstringBefore)
+  console.log(boardstringAfter)
 
     movesets.forEach(moveset => {
       const offsets = moveset.directions.map(d => parseDirection(d))
-      const { stop, addBreak, boardState } = moveset.condition
+      const { stop, addBreak, boardBefore, boardAfter } = moveset.condition
 
       offsets.map(offset => {
         let square = startSquare + offset;
@@ -88,7 +101,9 @@ function moveCalculator(board: string[], startSquare: number, movesets: Moveset)
           let text = board[startSquare] + board[square];
           
           if (stop.test(text)) break;
-          if (boardState && !boardState?.test(board.join('').substring(0, startSquare))) break
+
+          if (boardBefore && !boardBefore.test(boardstringBefore)) break
+          if (boardAfter && !boardAfter.test(boardstringAfter)) break
           
           moves.push(square);
           square += offset;
@@ -100,6 +115,30 @@ function moveCalculator(board: string[], startSquare: number, movesets: Moveset)
 
   return moves;
 }
+
+
+const directionMap = {
+  E: 1,
+  S: 16,
+  W: -1,
+  N: -16,
+} as const;
+
+/* 
+  Combine a direction string into offset number, following the map above. Example:
+  N     -> -16
+  SSW   -> 31
+*/
+export const parseDirection = (direction: string): number => {
+  return direction
+    .split('')
+    .reduce(
+      (accumulator: number, value: string) =>
+        accumulator + (directionMap[value as keyof typeof directionMap] || 0),
+      0
+    );
+};
+
 
 function CoordinateNumbers() {
   return (

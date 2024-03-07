@@ -1,63 +1,40 @@
 import { ChangeEvent, useState } from 'react';
-import { Moveset } from '../utils/movesets';
+import { Moveset, bishopMoveset, blackkingMoveset, blackpawnMoveset, knightMoveset, queenMoveset, rookMoveset, whitekingMoveset, whitepawnMoveset } from '../utils/movesets';
 
-
-const directionMap = {
-  E: 1,
-  S: 16,
-  W: -1,
-  N: -16,
-} as const;
-
-/* 
-  Combine a direction string into offset number, following the map above. Example:
-  N     -> -16
-  SSW   -> 31
-*/
-export const parseDirection = (direction: string): number => {
-  return direction
-    .split('')
-    .reduce(
-      (accumulator: number, value: string) =>
-        accumulator + (directionMap[value as keyof typeof directionMap] || 0),
-      0
-    );
-};
-
-const thing = {
-  never: /gg/,
-  white: /[RNBQKP]/,
-  black: /[rnbqkp]/,
-  enemies: /[RNBQKP][rnbqkpe]|[rnbqkpe][RNBQKP]/,
-  friends: /[RNBQKP][RNBQKP]|[rnbqkpe][rnbqkpe]/,
-  notEnemies: /[RNBQKP][rnbqkpe ]|[rnbqkpe][RNBQKP ]/,
-  notFriends: /[RNBQKP][RNBQKP ]|[rnbqkpe][rnbqkpe ]/,
-} as const;
 
 type BehaviourProps = {
-  setDirections: (moves: Moveset[]) => void;
+  setMoveset: (moves: Moveset) => void;
 };
 
-const defaultMove = `{
-  "N": {
-    "stop": "friends",
-    "addBreak": "enemies"
-  }
-}`;
+const movesetMap: Record<string, Moveset> = {
+  'rook': rookMoveset,
+  'knight': knightMoveset,
+  'bishop': bishopMoveset,
+  'queen': queenMoveset,
+  'white king': whitekingMoveset,
+  'black king': blackkingMoveset,
+  'white pawn': whitepawnMoveset,
+  'black pawn': blackpawnMoveset
+}
+
+
 
 export function BehaviourTextArea(props: BehaviourProps) {
-  const { setDirections } = props;
+  const { setMoveset } = props;
 
-  const [text, setText] = useState(defaultMove);
+  const [text, setText] = useState('colour = \npiece = ');
   const [changed, setChanged] = useState(false);
 
   const applyChanges = () => {
     setChanged(false);
-    const moves: Moveset[] = Object.entries(JSON.parse(text)).map(
-      ([key, value]) => ({ [parseDirection(key)]: value } as Moveset)
-    );
 
-    setDirections(moves);
+    const pieceMatch = /piece *= *(\w+)/.exec(text)
+    if (!pieceMatch) return
+
+    const moveset = movesetMap[pieceMatch[1]]
+    setMoveset(moveset)
+
+
   };
 
   const handleInputChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
@@ -74,7 +51,7 @@ export function BehaviourTextArea(props: BehaviourProps) {
   return (
     <div className='border-slate-200'>
       <div className='flex justify-between px-8 h-10 bg-slate-100 rounded-t-md items-center'>
-        <div className=''>Elephant</div>
+        <div className=''>Select Piece</div>
         {changed && (
           <button
             onClick={applyChanges}
