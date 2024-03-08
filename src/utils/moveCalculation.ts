@@ -34,13 +34,11 @@ export function moveCalculator(
   movesets: Moveset[]
 ) {
   const moves: number[] = [];
-  const boardstring = board.join('');
-  const boardstringBefore = boardstring.substring(0, startSquare);
-  const boardstringAfter = boardstring.substring(startSquare + 1);
+
 
   movesets.forEach((moveset) => {
     const offsets = moveset.directions.map(parseDirection);
-    const { stop, addBreak, boardBefore, boardAfter } = moveset.condition;
+    const { stop, addBreak, boardCondition } = moveset.condition;
 
     offsets.forEach((offset) => {
       let square = startSquare + offset;
@@ -50,8 +48,10 @@ export function moveCalculator(
 
         if (stop.test(moveDescription)) break;
 
-        if (boardBefore && !boardBefore.test(boardstringBefore)) break;
-        if (boardAfter && !boardAfter.test(boardstringAfter)) break;
+        if (!isBoardconditionSatisfied(startSquare, board, boardCondition)) {
+          console.log(isBoardconditionSatisfied(startSquare, board, boardCondition))
+          break
+        }
 
         moves.push(square);
         square += offset;
@@ -60,6 +60,15 @@ export function moveCalculator(
       }
     });
   });
-
   return moves;
+}
+
+function isBoardconditionSatisfied(startSquare: number, board: string[], boardCondition: RegExp | undefined) {
+  if (!boardCondition) return true   // with no condition for the board, any board is acceptable     
+
+  const boardCopy = [...board]
+  boardCopy[startSquare] = 'I'
+  const boardstring = boardCopy.join('');
+
+  return boardCondition.test(boardstring)   // check if the board is acceptable for this move.
 }

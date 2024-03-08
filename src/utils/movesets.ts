@@ -1,5 +1,4 @@
-// Good luck debugging this...
-const never = /g/;
+// welcome to regex hell, good luck debugging this
 const always = /./;
 const occupied = /.\w/;
 
@@ -9,25 +8,11 @@ const friends = /[A-Z][A-Z]|[a-z][a-z]/;
 // Includes square occupied by enemy only
 const notEnemies = /[A-Z][A-Z ]|[a-z][a-z ]/;
 
-// For white pawn
-const clearNorth = / .{15}$/;
-const secondRow = /^.{24,31}$/; // end of the string
-const fourthRow = /^.{49,56}$/; // start of the string
-const fourthRowBlackPawn = /^.{48,55}p$/; // start of the string
-const blackPawnRight = /^p/;
-
-// For black pawn
-const seventhRow = /^.{16,23}$/;
-const clearSouth = /^.{15} /;
-const fourthRowPawnRight = /^P.{56,62}$/; // en passant to the right
-const fourthRowPawnLeft = /^.{64,70}P$/; // en passant to the left
-
 
 export type Condition = {
   stop: RegExp;
   addBreak: RegExp;
-  boardBefore?: RegExp;
-  boardAfter?: RegExp;
+  boardCondition?: RegExp
 };
 
 const beam: Condition = {
@@ -100,8 +85,7 @@ export const whitepawnMoveset: Moveset[] = [
     condition: {
       stop: occupied,
       addBreak: always,
-      boardBefore: clearNorth,
-      boardAfter: secondRow,
+      boardCondition: / .{15}I.{24,31}$/
     },
   },
 ];
@@ -126,8 +110,7 @@ export const blackpawnMoveset: Moveset[] = [
     condition: {
       stop: occupied,
       addBreak: always,
-      boardBefore: seventhRow,
-      boardAfter: clearSouth,
+      boardCondition: /^.{16,23}I.{15} /
     },
   },
 ];
