@@ -3,10 +3,12 @@ import { useEffect, useState } from 'react';
 import FenTextArea from './FenTextArea';
 import { getPieceImage } from '../utils/getPieceImage';
 import { Moveset } from '../utils/movesets';
+import { moveCalculator } from '../utils/moveCalculation';
+import { multiPieceMoveCalculator } from '../utils/multiPieceMove';
 
 type BoardProps = {
   piece: string
-  moveset: Moveset;
+  moveset: Moveset[];
   selectedSquare: number;
   setSelectedSquare: (index: number) => void;
 };
@@ -22,6 +24,8 @@ export default function Board(props: BoardProps) {
   const [board, setBoard] = useState<string[]>(defaultBoard);
 
   const moves = moveCalculator(board, selectedSquare, moveset);
+
+  const multiMoves = multiPieceMoveCalculator(board, selectedSquare)
 
   const handleSquareClick = (index: number) => {
     updateBoard(index)
@@ -60,9 +64,15 @@ export default function Board(props: BoardProps) {
                     alt='piece'
                   />
                 )}
-                {moves?.includes(index) && (
+                {moves.includes(index) && (
                   <div className='h-4 w-4 rounded-full bg-opacity-50 bg-green-600 absolute z-10'></div>
                 )}
+                {
+                  multiMoves.some(move => move.square === index) && (
+                    <div onClick={() => setBoard(multiMoves.find(move => move.square === index)?.result.split('') ?? board)} className='h-4 w-4 rounded-full bg-opacity-50 bg-red-600 absolute z-10'></div>
+                  )
+                }
+                
               </Square>
             ))}
           </div>
@@ -73,74 +83,6 @@ export default function Board(props: BoardProps) {
     </div>
   );
 }
-
-const isInBounds = (index: number) => {
-  if (index < 0 || 127 < index) return false;
-  const x = index % 16;
-  return x < 8;
-};
-
-
-function moveCalculator(board: string[], startSquare: number, movesets: Moveset) {
-  const moves: number[] = [];
-  const boardstring = board.join('')
-  const boardstringBefore = boardstring.substring(0, startSquare)
-  const boardstringAfter = boardstring.substring(startSquare + 1)
-
-  console.log(boardstringBefore)
-  console.log(boardstringAfter)
-
-    movesets.forEach(moveset => {
-      const offsets = moveset.directions.map(d => parseDirection(d))
-      const { stop, addBreak, boardBefore, boardAfter } = moveset.condition
-
-      offsets.map(offset => {
-        let square = startSquare + offset;
-        
-        while (isInBounds(square)) {
-          let text = board[startSquare] + board[square];
-          
-          console.log(stop.test(text))
-
-          if (stop.test(text)) break;
-
-          if (boardBefore && !boardBefore.test(boardstringBefore)) break
-          if (boardAfter && !boardAfter.test(boardstringAfter)) break
-          
-          moves.push(square);
-          square += offset;
-          
-          if (addBreak.test(text)) break;
-        }
-      })
-    })
-
-  return moves;
-}
-
-
-const directionMap = {
-  E: 1,
-  S: 16,
-  W: -1,
-  N: -16,
-} as const;
-
-/* 
-  Combine a direction string into offset number, following the map above. Example:
-  N     -> -16
-  SSW   -> 31
-*/
-export const parseDirection = (direction: string): number => {
-  return direction
-    .split('')
-    .reduce(
-      (accumulator: number, value: string) =>
-        accumulator + (directionMap[value as keyof typeof directionMap] || 0),
-      0
-    );
-};
-
 
 function CoordinateNumbers() {
   return (

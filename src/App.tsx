@@ -2,9 +2,9 @@ import { useState } from 'react';
 import Board from './components/Board';
 import { BehaviourTextArea } from './components/BehaviourInput';
 import PieceSelect from './components/PieceSelect';
-import { Moveset, amazonMoveset, archBishopMoveset, bishopMoveset, blackkingMoveset, blackpawnMoveset, chancellorMoveset, knightMoveset, queenMoveset, rookMoveset, whitekingMoveset, whitepawnMoveset } from './utils/movesets';
+import { Moveset, amazonMoveset, archBishopMoveset, bishopMoveset, blackpawnMoveset, chancellorMoveset, kingMoveset, knightMoveset, queenMoveset, rookMoveset, whitepawnMoveset } from './utils/movesets';
 
-const movesetMap: Record<string, Moveset> = {
+const movesetMap: Record<string, Moveset[]> = {
   'r': rookMoveset,
   'R': rookMoveset,
   'n': knightMoveset,
@@ -13,8 +13,8 @@ const movesetMap: Record<string, Moveset> = {
   'B': bishopMoveset,
   'q': queenMoveset,
   'Q': queenMoveset,
-  'K': whitekingMoveset,
-  'k': blackkingMoveset,
+  'K': kingMoveset,
+  'k': kingMoveset,
   'P': whitepawnMoveset,
   'p': blackpawnMoveset,
   'a': archBishopMoveset,
@@ -29,13 +29,13 @@ const movesetMap: Record<string, Moveset> = {
 
 function App() {
   const [piece, setPiece] = useState('K')
-  const [moveset, setMoveset] = useState<Moveset>(whitekingMoveset)
+  const [moveset, setMoveset] = useState<Moveset[]>(movesetMap[piece])
   const [selectedSquare, setSelectedSquare] = useState(0)
 
   const handlePieceSelect = (piece: string) => {
-    const moveset = movesetMap[piece]
+    const movesets = movesetMap[piece]
     setPiece(piece)
-    setMoveset(moveset ?? [])
+    setMoveset(movesets ?? [])
   }
 
   return (
@@ -48,7 +48,7 @@ function App() {
           moveset={moveset}
           />
         <div>
-          <BehaviourTextArea setMoveset={setMoveset}/>
+          <BehaviourTextArea />
           <PieceSelect selectedSquare={selectedSquare} handleSelect={handlePieceSelect} />
         </div>
       </div>

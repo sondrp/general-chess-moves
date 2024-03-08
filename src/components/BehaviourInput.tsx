@@ -2,38 +2,14 @@ import { ChangeEvent, useState } from 'react';
 import { Moveset, bishopMoveset, blackkingMoveset, blackpawnMoveset, knightMoveset, queenMoveset, rookMoveset, whitekingMoveset, whitepawnMoveset } from '../utils/movesets';
 
 
-type BehaviourProps = {
-  setMoveset: (moves: Moveset) => void;
-};
+export function BehaviourTextArea() {
+ 
 
-const movesetMap: Record<string, Moveset> = {
-  'rook': rookMoveset,
-  'knight': knightMoveset,
-  'bishop': bishopMoveset,
-  'queen': queenMoveset,
-  'white king': whitekingMoveset,
-  'black king': blackkingMoveset,
-  'white pawn': whitepawnMoveset,
-  'black pawn': blackpawnMoveset
-}
-
-
-
-export function BehaviourTextArea(props: BehaviourProps) {
-  const { setMoveset } = props;
-
-  const [text, setText] = useState('colour = \npiece = ');
+  const [text, setText] = useState('');
   const [changed, setChanged] = useState(false);
 
   const applyChanges = () => {
     setChanged(false);
-
-    const pieceMatch = /piece *= *(\w+)/.exec(text)
-    if (!pieceMatch) return
-
-    const moveset = movesetMap[pieceMatch[1]]
-    setMoveset(moveset)
-
 
   };
 

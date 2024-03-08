@@ -22,15 +22,8 @@ const clearSouth = /^.{15} /;
 const fourthRowPawnRight = /^P.{56,62}$/; // en passant to the right
 const fourthRowPawnLeft = /^.{64,70}P$/; // en passant to the left
 
-const whiteCastleRight = /^  Rx{8}$/;
-const whiteCastleLeft = /R   $/;
-const whiteKingHome = /^...x{8}$/;
 
-const blackCastleRight = /  r/;
-const blackCastleLeft = /^r   $/;
-const blackKingHome = /^....$/;
-
-type Condition = {
+export type Condition = {
   stop: RegExp;
   addBreak: RegExp;
   boardBefore?: RegExp;
@@ -50,85 +43,44 @@ const hop: Condition = {
 export type Moveset = {
   directions: string[];
   condition: Condition;
-}[];
+};
 
-export const rookMoveset: Moveset = [
+export const rookMoveset: Moveset[] = [
   {
     directions: ['E', 'S', 'W', 'N'],
     condition: beam,
   },
 ];
 
-export const knightMoveset: Moveset = [
+export const knightMoveset: Moveset[] = [
   {
     directions: ['NNE', 'EEN', 'EES', 'SSE', 'SSW', 'WWS', 'WWN', 'NNW'],
     condition: hop,
   },
 ];
 
-export const bishopMoveset: Moveset = [
+export const bishopMoveset: Moveset[] = [
   {
     directions: ['NE', 'SE', 'SW', 'NW'],
     condition: beam,
   },
 ];
 
-export const queenMoveset: Moveset = [
+export const queenMoveset: Moveset[] = [
   {
     directions: ['NE', 'E', 'SE', 'S', 'SW', 'W', 'NW', 'N'],
     condition: beam,
   },
 ];
 
-export const whitekingMoveset: Moveset = [
+export const kingMoveset: Moveset[] = [
   {
     directions: ['NE', 'E', 'SE', 'S', 'SW', 'W', 'NW', 'N'],
     condition: hop,
   },
-  {
-    directions: ['EE'],
-    condition: {
-      stop: never,
-      addBreak: always,
-      boardAfter: whiteCastleRight,
-    },
-  },
-  {
-    directions: ['WW'],
-    condition: {
-      stop: never,
-      addBreak: always,
-      boardAfter: whiteKingHome,
-      boardBefore: whiteCastleLeft,
-    },
-  },
 ];
 
-export const blackkingMoveset: Moveset = [
-  {
-    directions: ['NE', 'E', 'SE', 'S', 'SW', 'W', 'NW', 'N'],
-    condition: hop,
-  },
-  {
-    directions: ['EE'],
-    condition: {
-      stop: never,
-      addBreak: always,
-      boardBefore: blackKingHome,
-      boardAfter: blackCastleRight,
-    },
-  },
-  {
-    directions: ['WW'],
-    condition: {
-      stop: never,
-      addBreak: always,
-      boardBefore: blackCastleLeft,
-    },
-  },
-];
-
-export const whitepawnMoveset: Moveset = [
+export const whitepawnMoveset: Moveset[] = [
   {
     directions: ['NE', 'NW'],
     condition: {
@@ -152,26 +104,9 @@ export const whitepawnMoveset: Moveset = [
       boardAfter: secondRow,
     },
   },
-  {
-    directions: ['NE'], // En passant: must be on the fourth row, and there must be a pawn to the right
-    condition: {
-      stop: occupied,
-      addBreak: always,
-      boardBefore: fourthRow,
-      boardAfter: blackPawnRight,
-    },
-  },
-  {
-    directions: ['NW'], // En passant: must be on the fourth row, and there must be a pawn to the right
-    condition: {
-      stop: occupied,
-      addBreak: always,
-      boardBefore: fourthRowBlackPawn,
-    },
-  },
 ];
 
-export const blackpawnMoveset: Moveset = [
+export const blackpawnMoveset: Moveset[] = [
   {
     directions: ['SE', 'SW'],
     condition: {
@@ -195,25 +130,9 @@ export const blackpawnMoveset: Moveset = [
       boardAfter: clearSouth,
     },
   },
-  {
-    directions: ['SE'],
-    condition: {
-      stop: occupied,
-      addBreak: always,
-      boardAfter: fourthRowPawnRight,
-    },
-  },
-  {
-    directions: ['SW'],
-    condition: {
-      stop: occupied,
-      addBreak: always,
-      boardBefore: fourthRowPawnLeft,
-    },
-  },
 ];
 
-export const archBishopMoveset: Moveset = [
+export const archBishopMoveset: Moveset[] = [
   {
     directions: ['NE', 'SE', 'SW', 'NW'],
     condition: beam,
@@ -224,7 +143,7 @@ export const archBishopMoveset: Moveset = [
   },
 ];
 
-export const chancellorMoveset: Moveset = [
+export const chancellorMoveset: Moveset[] = [
   {
     directions: ['E', 'S', 'W', 'N'],
     condition: beam,
@@ -235,7 +154,7 @@ export const chancellorMoveset: Moveset = [
   },
 ]
 
-export const amazonMoveset: Moveset = [
+export const amazonMoveset: Moveset[] = [
   {
     directions: ['NE', 'E', 'SE', 'S', 'SW', 'W', 'NW', 'N'],
     condition: beam,

@@ -24,22 +24,22 @@ export default function PieceSelect(props: PieceSelectProps) {
         <div className='font-bold text-slate-600 text-opacity-80'>Custom:</div>
         <div className='flex gap-2'>
           {special.map((piece) => (
-            <>
-              <button onClick={() => handleSelect(piece)} key={piece + '1'}>
+            <div key={piece}>
+              <button onClick={() => handleSelect(piece)}>
                 <img
                   className='size-10'
                   src={getImgUrl(`b${piece}`)}
                   alt={piece}
                 />
               </button>
-              <button onClick={() => handleSelect(piece.toUpperCase())} key={piece + '2'}>
+              <button onClick={() => handleSelect(piece.toUpperCase())}>
                 <img
                   className='size-10'
                   src={getImgUrl(`w${piece}`)}
                   alt={piece}
                 />
               </button>
-            </>
+            </div>
           ))}
         </div>
       </div>
