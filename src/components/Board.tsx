@@ -1,49 +1,32 @@
 import Square from './Square';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import FenTextArea from './FenTextArea';
 import { getPieceImage } from '../utils/getPieceImage';
-import { Moveset } from '../utils/movesets';
-import { moveCalculator } from '../utils/moveCalculation';
-import { multiPieceMoveCalculator } from '../utils/multiPieceMove';
+import { Move } from '../utils/moveCalculator';
+
+
 
 type BoardProps = {
-  piece: string
-  moveset: Moveset[];
-  selectedSquare: number;
-  setSelectedSquare: (index: number) => void;
+  handleSquareClick: (board: string[], square: number) => string[] | undefined
+  moves: Move[]
 };
 
-// Empty board with padding (128 squares)
+// Board with padding
 const defaultBoard =
-  'K   R   xxxxxxxx    R   xxxxxxxx        xxxxxxxx        xxxxxxxx        xxxxxxxx        xxxxxxxx        xxxxxxxxr       xxxxxxxx'
+  'rnbqkbnr--------pppppppp--------        --------        --------        --------        --------PPPPPPPP--------RNBQKBNR--------'
   .split('');
 
 export default function Board(props: BoardProps) {
-  const { piece, moveset, selectedSquare, setSelectedSquare } = props;
+  const [board, setBoard] = useState(defaultBoard)
 
-  const [board, setBoard] = useState<string[]>(defaultBoard);
+  const { handleSquareClick, moves } = props
 
-  const moves = moveCalculator(board, selectedSquare, moveset);
-
-  const multiMoves = multiPieceMoveCalculator(board, selectedSquare)
-
-  const handleSquareClick = (index: number) => {
-    updateBoard(index)
-    setSelectedSquare(index);
-  };
-  
-  useEffect(() => {
-    updateBoard(selectedSquare)
-  }, [piece])
-
-  const updateBoard = (index: number) => {
-    setBoard((oldBoard) => {
-      const newBoard = [...oldBoard];
-      newBoard[selectedSquare] = ' ';
-      newBoard[index] = piece;
-      return newBoard;
-    });
-  }
+  const onSquareClick = (index: number) => {
+    const newboard = handleSquareClick(board, index)
+    if (newboard) {
+      setBoard([...newboard])
+    }
+  } 
 
   return (
     <div>
@@ -55,7 +38,7 @@ export default function Board(props: BoardProps) {
               <Square
                 key={index}
                 index={index}
-                handleClick={() => handleSquareClick(index)}
+                handleClick={() => onSquareClick(index)}
               >
                 {/[ernbqkpcza]/i.test(board[index]) && (
                   <img
@@ -64,15 +47,9 @@ export default function Board(props: BoardProps) {
                     alt='piece'
                   />
                 )}
-                {moves.includes(index) && (
+                {moves.some(move => move.square === index) && (
                   <div className='h-4 w-4 rounded-full bg-opacity-50 bg-green-600 absolute z-10'></div>
                 )}
-                {
-                  multiMoves.some(move => move.square === index) && (
-                    <div onClick={() => setBoard(multiMoves.find(move => move.square === index)?.result.split('') ?? board)} className='h-4 w-4 rounded-full bg-opacity-50 bg-red-600 absolute z-10'></div>
-                  )
-                }
-                
               </Square>
             ))}
           </div>
@@ -114,3 +91,4 @@ function CoordinateLetters() {
     </div>
   );
 }
+

@@ -5,16 +5,6 @@ type BoardTextAreaProps = {
   setBoard: (board: string[]) => void;
 };
 
-
-/* 
-  Who cares about the padding?
-  
-  Does not care:
-    - fen string: it must be cut off. 
-
-
-*/
-
 const boardToFen = (board: string[]): string => {
   return Array.from({ length: 8 }, (_, i) => board.slice(i * 16, (i + 1) * 16)) // split array into rows
     .map((row) => row.join(''))                                                 // join rows into a string
@@ -47,10 +37,10 @@ export default function FenTextArea(props: BoardTextAreaProps) {
     boardstring = boardstring.replace(/\d/g, (match) =>
       ' '.repeat(parseInt(match))
     ); // replace numbers with whitespace of that length
-    boardstring = boardstring.replace(/\//g, 'xxxxxxxx'); // Replace slash with padding
-    boardstring += 'xxxxxxxx'                             // Add padding for the last row aswell
+    boardstring = boardstring.replace(/\//g, '--------'); // Replace slash with padding
+    boardstring += '--------'                             // Add padding for the last row aswell
 
-    // The board cannot end up with anything other than 64 squares
+    // The board cannot end up with anything other than 64 squares (and 64 padding)
     if (boardstring.length !== 128) {
       setError('at least one row has incorrect length');
       return;

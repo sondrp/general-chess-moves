@@ -1,5 +1,4 @@
 
-
 export function getPieceImage(name: string) {
     let piece = name
     if (/[rnbqkpazc]/g.test(name)) {

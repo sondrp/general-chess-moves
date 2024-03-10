@@ -1,5 +1,4 @@
 // welcome to regex hell, good luck debugging this
-const always = /./;
 const occupied = /.\w/;
 
 const enemies = /[A-Z][a-z]|[a-z][A-Z]/;
@@ -8,142 +7,173 @@ const friends = /[A-Z][A-Z]|[a-z][a-z]/;
 // Includes square occupied by enemy only
 const notEnemies = /[A-Z][A-Z ]|[a-z][a-z ]/;
 
-
-export type Condition = {
-  stop: RegExp;
-  addBreak: RegExp;
-  boardCondition?: RegExp
-};
-
-const beam: Condition = {
+const beam = {
   stop: friends,
   addBreak: enemies,
 };
 
-const hop: Condition = {
-  stop: friends,
-  addBreak: always,
-};
-
 export type Moveset = {
   directions: string[];
-  condition: Condition;
+  stop?: RegExp;
+  addBreak?: RegExp;
+  boardCondition?: RegExp;
+  replacement?: string;
 };
 
 export const rookMoveset: Moveset[] = [
   {
     directions: ['E', 'S', 'W', 'N'],
-    condition: beam,
+    ...beam,
   },
 ];
 
 export const knightMoveset: Moveset[] = [
   {
     directions: ['NNE', 'EEN', 'EES', 'SSE', 'SSW', 'WWS', 'WWN', 'NNW'],
-    condition: hop,
+    stop: friends,
   },
 ];
 
 export const bishopMoveset: Moveset[] = [
   {
     directions: ['NE', 'SE', 'SW', 'NW'],
-    condition: beam,
+    ...beam,
   },
 ];
 
 export const queenMoveset: Moveset[] = [
   {
     directions: ['NE', 'E', 'SE', 'S', 'SW', 'W', 'NW', 'N'],
-    condition: beam,
+    ...beam,
   },
 ];
 
-export const kingMoveset: Moveset[] = [
+export const whiteKingMoveset: Moveset[] = [
   {
     directions: ['NE', 'E', 'SE', 'S', 'SW', 'W', 'NW', 'N'],
-    condition: hop,
+    stop: friends,
+  },
+  {
+    directions: ['EE'],
+    stop: friends,
+    boardCondition: /I  R(.{8})$/,
+    replacement: ' RK $1',
+  },
+  {
+    directions: ['WW'],
+    boardCondition: /R   I(.{11})$/,
+    replacement: '  KR $1',
+  },
+];
+
+export const blackKingMoveset: Moveset[] = [
+  {
+    directions: ['NE', 'E', 'SE', 'S', 'SW', 'W', 'NW', 'N'],
+    stop: friends,
+  },
+  {
+    directions: ['EE'],
+    stop: friends,
+    boardCondition: /^(.{4})I  r/,
+    replacement: '$1 rk ',
+  },
+  {
+    directions: ['WW'],
+    stop: friends,
+    boardCondition: /^r   I/,
+    replacement: '  kr ',
   },
 ];
 
 export const whitepawnMoveset: Moveset[] = [
   {
     directions: ['NE', 'NW'],
-    condition: {
-      stop: notEnemies,
-      addBreak: always,
-    },
+    stop: notEnemies,
   },
   {
     directions: ['N'],
-    condition: {
-      stop: occupied,
-      addBreak: always,
-    },
+    stop: occupied,
   },
   {
     directions: ['NN'],
-    condition: {
-      stop: occupied,
-      addBreak: always,
-      boardCondition: / .{15}I.{24,31}$/
-    },
+    stop: occupied,
+    boardCondition: / .{15}I.{24,31}$/,
+  },
+  {
+    directions: ['NE'],
+    stop: occupied,
+    boardCondition: / (.{14})Ip(.{72,78})$/,
+    replacement: 'P$1  $2',
+  },
+  {
+    directions: ['NW'],
+    stop: occupied,
+    boardCondition: / (.{15})pI(.{72,78})$/,
+    replacement: 'P$1  $2',
   },
 ];
 
 export const blackpawnMoveset: Moveset[] = [
   {
     directions: ['SE', 'SW'],
-    condition: {
-      stop: notEnemies,
-      addBreak: always,
-    },
+    stop: notEnemies,
   },
+
   {
     directions: ['S'],
-    condition: {
-      stop: occupied,
-      addBreak: always,
-    },
+    stop: occupied,
   },
+
   {
     directions: ['SS'],
-    condition: {
-      stop: occupied,
-      addBreak: always,
-      boardCondition: /^.{16,23}I.{15} /
-    },
+    stop: occupied,
+    boardCondition: /^.{16,23}I.{15} /,
+  },
+
+  {
+    directions: ['SW'],
+    stop: occupied,
+    boardCondition: /^(.{64,70})PI(.{14}) /,
+    replacement: '$1  $2p',
+  },
+
+  {
+    directions: ['SE'],
+    stop: occupied,
+    boardCondition: /^(.{64,70})IP(.{15}) /,
+    replacement: '$1  $2p',
   },
 ];
 
 export const archBishopMoveset: Moveset[] = [
   {
     directions: ['NE', 'SE', 'SW', 'NW'],
-    condition: beam,
+    ...beam,
   },
   {
     directions: ['NNE', 'EEN', 'EES', 'SSE', 'SSW', 'WWS', 'WWN', 'NNW'],
-    condition: hop,
+    stop: friends,
   },
 ];
 
 export const chancellorMoveset: Moveset[] = [
   {
     directions: ['E', 'S', 'W', 'N'],
-    condition: beam,
+    ...beam,
   },
   {
     directions: ['NNE', 'EEN', 'EES', 'SSE', 'SSW', 'WWS', 'WWN', 'NNW'],
-    condition: hop,
+    stop: friends,
   },
-]
+];
 
 export const amazonMoveset: Moveset[] = [
   {
     directions: ['NE', 'E', 'SE', 'S', 'SW', 'W', 'NW', 'N'],
-    condition: beam,
+    ...beam,
   },
   {
     directions: ['NNE', 'EEN', 'EES', 'SSE', 'SSW', 'WWS', 'WWN', 'NNW'],
-    condition: hop,
+    stop: friends,
   },
-]
+];
