@@ -5,10 +5,12 @@
 */
 
 import { isInBounds, movesetMap, parseDirection } from './maps';
+import { MovesetHistory } from './movesets';
 
 export type Move = {
   square: number;
   result: string;
+  history?: MovesetHistory;
 };
 
 export function moveCalculator(board: string[], startSquare: number) {
@@ -24,17 +26,18 @@ export function moveCalculator(board: string[], startSquare: number) {
   if (!movesets) throw Error('Moveset could not be found for this piece')
 
   movesets.forEach((moveset) => {
-    const { directions, stop, addBreak, boardCondition, replacement } = moveset;
+    const { directions, stop, addBreak, boardCondition, replacement, history } = moveset;
     const offsets = directions.map(parseDirection);
-
+    
     offsets.forEach((offset) => {
       let square = startSquare + offset;
-
+      
       while (isInBounds(square)) {
         const moveDescription = board[startSquare] + board[square];
-
+        
         if (shouldStop(moveDescription, stop)) return;
         if (!boardAcceptable(boardstring, boardCondition)) return;
+        
 
         /* 
         At this point the move is acceptable. Calculate the board 
@@ -49,7 +52,7 @@ export function moveCalculator(board: string[], startSquare: number) {
           boardCondition,
           replacement
         );
-        moves.push({ square, result });
+        moves.push({ square, result, history });
         square += offset
         
         if (shouldBreakAfterAddingMove(moveDescription, addBreak)) return;

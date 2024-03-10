@@ -3,6 +3,8 @@ import Board from './components/Board';
 import { BehaviourTextArea } from './components/BehaviourInput';
 import PieceSelect from './components/PieceSelect';
 import { Move, moveCalculator } from './utils/moveCalculator';
+import { enPassantFilter, isCastleIllegal, isKingInCheck } from './utils/moveFilters';
+import { parseDirection } from './utils/maps';
 
 /* 
   It is time to make a game of chess. Should start off with standard board at least.
@@ -19,13 +21,22 @@ const state: State = {
   turn: true
 }
 
-const history = {
+export type History = {
+  castle: String,
+  enPassant: number
+}
+
+const gameHistory = {
   castle: 'KQkq',
+  enPassant: -1
 }
 
 const white = /[A-Z]/
 
 function App() {
+  console.log(gameHistory)
+
+  const [lastClicked, setLastClicked] = useState(-1)
 
   const [legalMoves, setLegalMoves] = useState<Move[]>([])
 
@@ -33,10 +44,12 @@ function App() {
   // Will see if that is possible.
   const handleSquareClick = (board: string[], square: number): string[] | undefined => {
     const moveToExecute = legalMoves.find(move => move.square === square)
+    setLastClicked(square)
+
     if (moveToExecute) {
       setLegalMoves([])
       state.turn = !state.turn
-      return moveToExecute.result.split('')
+      return moveExecutor(moveToExecute)
     }
     const piece = board[square]
 
@@ -51,8 +64,9 @@ function App() {
     }
 
     const moves = moveCalculator(board, square)
-
-    // then some filtering process here, taking history into account
+                  .filter(move => !isKingInCheck(move, state.turn))
+                  .filter(move => isCastleIllegal(move, state.turn, gameHistory))   // filters away illegal castle moves
+                  .filter(move => enPassantFilter(move, gameHistory))   // filter illegal en passant moves
 
     setLegalMoves(moves)
   }
@@ -66,13 +80,50 @@ function App() {
           />
         <div>
           <BehaviourTextArea />
-          <PieceSelect selectedSquare={-1} handleSelect={(piece: string) => console.log(piece)} />
+          <PieceSelect selectedSquare={lastClicked} handleSelect={(piece: string) => console.log(piece)} />
         </div>
       </div>
     </div>
   );
 }
 
+/* 
+  - Update the game
+  - Update the gameHistory
+    * Remove castle rights if king/rook moves.
+    * Add en passant square if pawn moves double.
+
+
+*/
+function moveExecutor(move: Move) {
+
+  if (move.history === 'whitePawnDouble') {
+    gameHistory.enPassant = move.square + parseDirection('S')
+  }
+
+  if (move.history === 'blackPawnDouble') {
+    gameHistory.enPassant = move.square + parseDirection('N')
+  }
+
+  if (move.history && /[KQkq]/.test(move.history)) {
+    gameHistory.castle.replace(move.history, '')
+  }
+
+  // also remove castle based on piece move... 
+  const newBoard = move.result.split('')
+
+  const piece = newBoard[move.square]
+
+  if (piece === 'k') {
+    gameHistory.castle.replace(/[kq]/g, '')
+  }
+  if (piece === 'K') {
+    gameHistory.castle.replace(/[KQ]/g, '')
+  }
+
+
+  return newBoard
+}
 
 
 export default App;
