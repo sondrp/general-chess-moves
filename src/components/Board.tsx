@@ -8,10 +8,11 @@ type BoardProps = {
   board: string[]
   setBoard: (board: string[]) => void
   moves: Move[]
+  lastClicked: number
 };
 
 export default function Board(props: BoardProps) {
-  const { handleSquareClick, moves, board, setBoard } = props
+  const { handleSquareClick, moves, board, setBoard, lastClicked } = props
 
   return (
     <div>
@@ -24,6 +25,7 @@ export default function Board(props: BoardProps) {
                 key={index}
                 index={index}
                 handleClick={() => handleSquareClick(index)}
+                greenBg={lastClicked === index && moves.length > 0}
               >
                 {/[ernbqkpcza]/i.test(board[index]) && (
                   <img

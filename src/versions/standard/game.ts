@@ -1,10 +1,6 @@
-type State = {
-  turn: boolean; // ture for white's turn
-  board: string
-  gameActive: boolean   // toggle when game over
-};
 
-export const gameState: State = {
+
+const gameState: State = {
   turn: true,
   board: 'rnbqkbnr--------pppppppp--------        --------        --------        --------        --------PPPPPPPP--------RNBQKBNR--------',
   gameActive: true
@@ -14,13 +10,17 @@ const white = /[A-Z]/;
 const blackKing = /k/;
 const whiteKing = /K/;
 
-import { Move, Moveset } from '../../types/types';
+import { Move, Moveset, State } from '../../types/types';
 import { calculateEnemyCover } from '../../utils/common';
-import { changeHistory } from './history';
+
+export function getBoardAsArray() {
+  return gameState.board.split('')
+}
 
 export function executeMove(move: Move) {
-  changeHistory(move);
+
   gameState.turn = !gameState.turn;
+  gameState.board = move.result
 
   const board = move.result.split('')
 
