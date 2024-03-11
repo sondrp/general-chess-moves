@@ -4,40 +4,33 @@
     Historic context is the last thing, not sure what that looks like yet.
 */
 
-import { movesetMap } from '../versions/standard/movesets';
+import { Move, Moveset } from '../types/types';
 import { isInBounds, parseDirection } from './common';
 
-export type Move = {
-  square: number;
-  result: string;
-  tag?: string;
-};
-
-export function moveCalculator(board: string[], startSquare: number) {
+export function moveCalculator(
+  movesetMap: Record<string, Moveset[]>,
+  board: string[],
+  startSquare: number
+) {
   const moves: Move[] = [];
-
-  const boardCopy = [...board];
-  boardCopy[startSquare] = 'I';           // To make it possible to match with regex
-  const boardstring = boardCopy.join(''); // Need this for boardcheck and replacement
 
   const piece = board[startSquare];
   const movesets = movesetMap[piece];
 
-  if (!movesets) throw Error('Moveset could not be found for this piece')
+  if (!movesets) throw Error('Moveset could not be found for this piece');
 
   movesets.forEach((moveset) => {
     const { directions, stop, addBreak, boardCondition, replacement, tag } = moveset;
     const offsets = directions.map(parseDirection);
-    
+
     offsets.forEach((offset) => {
       let square = startSquare + offset;
-      
+
       while (isInBounds(square)) {
         const moveDescription = board[startSquare] + board[square];
-        
+
         if (shouldStop(moveDescription, stop)) return;
-        if (!boardAcceptable(boardstring, boardCondition)) return;
-        
+        if (!boardAcceptable(board, startSquare, boardCondition)) return;
 
         /* 
         At this point the move is acceptable. Calculate the board 
@@ -45,21 +38,20 @@ export function moveCalculator(board: string[], startSquare: number) {
         */
 
         const result = makeReplacement(
-          boardCopy,
-          piece,
+          board,
           startSquare,
           square,
           boardCondition,
           replacement
         );
         moves.push({ square, result, tag });
-        square += offset
-        
+        square += offset;
+
         if (shouldBreakAfterAddingMove(moveDescription, addBreak)) return;
       }
     });
   });
-  return moves
+  return moves;
 }
 
 /* If stop condition not provided, it should not stop */
@@ -75,27 +67,37 @@ function shouldBreakAfterAddingMove(
   return !addBreak || addBreak.test(moveDescription);
 }
 
-function boardAcceptable (
-  boardstring: string,
+function boardAcceptable(
+  board: string[],
+  startSquare: number,
   boardCondition: RegExp | undefined
 ) {
+  const boardCopy = [...board];
+  boardCopy[startSquare] = 'I'; // To make it possible to match with regex
+  const boardstring = boardCopy.join(''); // Need this for boardcheck and replacement
+
   return !boardCondition || boardCondition.test(boardstring);
 }
 
 function makeReplacement(
   board: string[],
-  piece: string,
   startSquare: number,
   square: number,
   boardCondition: RegExp | undefined,
   replacement: string | undefined
 ) {
+  const boardCopy = [...board];
+
   if (!replacement || !boardCondition) {
     // without specialized replacement, just place the piece on the new square.
-    const boardCopy = [...board]
+    boardCopy[square] = board[startSquare];
     boardCopy[startSquare] = ' ';
-    boardCopy[square] = piece;
     return boardCopy.join('');
   }
-  return board.join('').replace(boardCondition, replacement);   // return the specialized replacement (castle, en passant)
+
+  // Specialized replacement need to use the character I instead of the piece, otherwise matching will not work.
+  boardCopy[startSquare] = 'I';
+
+  // return the specialized replacement (like castle or en passant)
+  return boardCopy.join('').replace(boardCondition, replacement);
 }

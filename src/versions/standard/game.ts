@@ -14,7 +14,7 @@ const white = /[A-Z]/;
 const blackKing = /k/;
 const whiteKing = /K/;
 
-import { Move } from '../../utils/moveCalculator';
+import { Move, Moveset } from '../../types/types';
 import { calculateEnemyCover } from '../../utils/common';
 import { changeHistory } from './history';
 
@@ -39,16 +39,16 @@ export function executeMove(move: Move) {
 }
 
 /* Confirms that a move does not break a game specific rule. */
-export function checkGame(move: Move): boolean {
+export function checkGame(movesetMap: Record<string, Moveset[]>, move: Move): boolean {
 
-  if (isKingInCheck(move)) return false;
+  if (isKingInCheck(movesetMap, move)) return false;
 
-  if (illegalCastle(move)) return false
+  if (illegalCastle(movesetMap, move)) return false
 
   return true;
 }
 
-function isKingInCheck(move: Move) {
+function isKingInCheck(movesetMap: Record<string, Moveset[]>, move: Move) {
   const board = move.result.split('');
 
   // This is where our king would end up
@@ -57,7 +57,7 @@ function isKingInCheck(move: Move) {
   );
 
   // Find all squares the enemy cover, and check if the king is in it.
-  return calculateEnemyCover(move.result.split(''), gameState.turn).some(
+  return calculateEnemyCover(movesetMap, move.result.split(''), gameState.turn).some(
     (move) => move.square === kingIndex
   );
 }
@@ -70,7 +70,7 @@ const tagToCastleSquares: Record<string, number[]> = {
 }
 
 /* Return TRUE only if the move is attempting illegal castle */
-function illegalCastle(move: Move) {
+function illegalCastle(movesetMap: Record<string, Moveset[]>, move: Move) {
   const { tag, result } = move
   if (!tag) return false       
 
@@ -79,7 +79,7 @@ function illegalCastle(move: Move) {
   const squaresToClear = tagToCastleSquares[tag]
 
   const board = result.split('')
-  const enemyCover = calculateEnemyCover(board, gameState.turn)
+  const enemyCover = calculateEnemyCover(movesetMap, board, gameState.turn)
 
   // if enemy covers relevant square, do not castle
   return enemyCover.some(move => squaresToClear.includes(move.square))  

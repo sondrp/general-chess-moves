@@ -22,7 +22,7 @@ export default function Square(props: PieceProps) {
       className={cn(
         'relative flex size-10 xl:size-20 items-center justify-center bg-opacity-50 hover:border',
         isWhite ? 'bg-orange-100' : ' bg-orange-700',
-        isPadding && 'opacity-20',
+        isPadding && 'hidden',
       )}
     >
       {children}

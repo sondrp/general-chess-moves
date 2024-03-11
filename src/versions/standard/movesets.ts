@@ -1,3 +1,5 @@
+import { Moveset } from "../../types/types";
+
 // welcome to regex hell, good luck debugging this
 const occupied = /.\w/;
 
@@ -11,14 +13,7 @@ const beam = {
   addBreak: enemies,
 };
 
-export type Moveset = {
-    directions: string[];
-    stop?: RegExp;
-    addBreak?: RegExp;
-    boardCondition?: RegExp;
-    replacement?: string;
-    tag?: string
-  };
+
 
 const rookMoveset: Moveset[] = [
   {

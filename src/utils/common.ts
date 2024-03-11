@@ -11,9 +11,11 @@
 const piece = /[a-zA-Z]/;
 const black = /[a-z]/;
 
-import { Move, moveCalculator } from './moveCalculator';
+import { Move, Moveset } from '../types/types';
+import { moveCalculator } from './moveCalculator';
 
 export function calculateEnemyCover(
+  movesetMap: Record<string, Moveset[]>,
   board: string[],
   whitePlaying: boolean
 ): Move[] {
@@ -21,7 +23,7 @@ export function calculateEnemyCover(
     .map((_, i) => i) // need to use the index in move calculation.
     .filter((square) => piece.test(board[square])) // filter empty squares
     .filter((piece) => black.test(board[piece]) === whitePlaying) // filter
-    .flatMap((enemy) => moveCalculator(board, enemy));
+    .flatMap((enemy) => moveCalculator(movesetMap, board, enemy));
 }
 
 export const isInBounds = (index: number) => {

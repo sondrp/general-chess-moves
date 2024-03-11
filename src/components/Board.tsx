@@ -1,44 +1,29 @@
 import Square from './Square';
-import { useEffect, useState } from 'react';
 import FenTextArea from './FenTextArea';
 import { getPieceImage } from '../utils/getPieceImage';
-import { Move } from '../utils/moveCalculator';
-import { gameState } from '../versions/standard/game';
+import { Move } from '../types/types';
 
 type BoardProps = {
-  handleSquareClick: (board: string[], square: number) => string[] | undefined
+  handleSquareClick: (square: number) => void
+  board: string[]
+  setBoard: (board: string[]) => void
   moves: Move[]
 };
 
-
-
 export default function Board(props: BoardProps) {
-  const [board, setBoard] = useState(gameState.board.split(''))
-
-  useEffect(() => {
-    setBoard(gameState.board.split(''))
-  }, [gameState.board])
-
-  const { handleSquareClick, moves } = props
-
-  const onSquareClick = (index: number) => {
-    const newboard = handleSquareClick(board, index)
-    if (newboard) {
-      setBoard([...newboard])
-    }
-  } 
+  const { handleSquareClick, moves, board, setBoard } = props
 
   return (
     <div>
       <div className='flex'>
         <CoordinateNumbers />
         <div className='relative'>
-          <div className='grid grid-cols-16 xl:w-[80rem] h-fit'>
+          <div className='grid grid-cols-8 xl:w-[40rem] h-fit'>
             {Array.from({ length: 128 }, (_, index) => (
               <Square
                 key={index}
                 index={index}
-                handleClick={() => onSquareClick(index)}
+                handleClick={() => handleSquareClick(index)}
               >
                 {/[ernbqkpcza]/i.test(board[index]) && (
                   <img
@@ -87,7 +72,7 @@ function CoordinateLetters() {
           {letter}
         </div>
       ))}
-      <div className='w-80 xl:w-[32rem]'></div>
+      <div className='w-80 xl:w-[16rem]'></div>
     </div>
   );
 }

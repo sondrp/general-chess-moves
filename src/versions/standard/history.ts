@@ -1,5 +1,5 @@
+import { Move } from "../../types/types";
 import { parseDirection } from "../../utils/common";
-import { Move } from "../../utils/moveCalculator";
 
 /* 2. Define history object */
 const gameHistory = {
