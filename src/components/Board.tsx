@@ -1,23 +1,23 @@
 import Square from './Square';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import FenTextArea from './FenTextArea';
 import { getPieceImage } from '../utils/getPieceImage';
 import { Move } from '../utils/moveCalculator';
-
-
+import { gameState } from '../versions/standard/game';
 
 type BoardProps = {
   handleSquareClick: (board: string[], square: number) => string[] | undefined
   moves: Move[]
 };
 
-// Board with padding
-const defaultBoard =
-  'rnbqkbnr--------pppppppp--------        --------        --------        --------        --------PPPPPPPP--------RNBQKBNR--------'
-  .split('');
+
 
 export default function Board(props: BoardProps) {
-  const [board, setBoard] = useState(defaultBoard)
+  const [board, setBoard] = useState(gameState.board.split(''))
+
+  useEffect(() => {
+    setBoard(gameState.board.split(''))
+  }, [gameState.board])
 
   const { handleSquareClick, moves } = props
 

@@ -1,5 +1,4 @@
 import { ChangeEvent, useState } from 'react';
-import { Moveset, bishopMoveset, blackkingMoveset, blackpawnMoveset, knightMoveset, queenMoveset, rookMoveset, whitekingMoveset, whitepawnMoveset } from '../utils/movesets';
 
 
 export function BehaviourTextArea() {

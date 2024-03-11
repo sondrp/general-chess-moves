@@ -4,20 +4,20 @@
     Historic context is the last thing, not sure what that looks like yet.
 */
 
-import { isInBounds, movesetMap, parseDirection } from './maps';
-import { MovesetHistory } from './movesets';
+import { movesetMap } from '../versions/standard/movesets';
+import { isInBounds, parseDirection } from './common';
 
 export type Move = {
   square: number;
   result: string;
-  history?: MovesetHistory;
+  tag?: string;
 };
 
 export function moveCalculator(board: string[], startSquare: number) {
   const moves: Move[] = [];
 
   const boardCopy = [...board];
-  boardCopy[startSquare] = 'I'; // To make it possible to match with regex
+  boardCopy[startSquare] = 'I';           // To make it possible to match with regex
   const boardstring = boardCopy.join(''); // Need this for boardcheck and replacement
 
   const piece = board[startSquare];
@@ -26,7 +26,7 @@ export function moveCalculator(board: string[], startSquare: number) {
   if (!movesets) throw Error('Moveset could not be found for this piece')
 
   movesets.forEach((moveset) => {
-    const { directions, stop, addBreak, boardCondition, replacement, history } = moveset;
+    const { directions, stop, addBreak, boardCondition, replacement, tag } = moveset;
     const offsets = directions.map(parseDirection);
     
     offsets.forEach((offset) => {
@@ -41,7 +41,7 @@ export function moveCalculator(board: string[], startSquare: number) {
 
         /* 
         At this point the move is acceptable. Calculate the board 
-        should the move be played, and add to final board
+        should the move be played, and add to move list
         */
 
         const result = makeReplacement(
@@ -52,7 +52,7 @@ export function moveCalculator(board: string[], startSquare: number) {
           boardCondition,
           replacement
         );
-        moves.push({ square, result, history });
+        moves.push({ square, result, tag });
         square += offset
         
         if (shouldBreakAfterAddingMove(moveDescription, addBreak)) return;
@@ -97,5 +97,5 @@ function makeReplacement(
     boardCopy[square] = piece;
     return boardCopy.join('');
   }
-  return board.join('').replace(boardCondition, replacement);   // return the specialized replacement
+  return board.join('').replace(boardCondition, replacement);   // return the specialized replacement (castle, en passant)
 }
