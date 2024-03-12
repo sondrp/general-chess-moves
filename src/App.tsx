@@ -3,65 +3,13 @@ import Board from './components/Board';
 import { BehaviourTextArea } from './components/BehaviourInput';
 import PieceSelect from './components/PieceSelect';
 import { moveCalculator } from './utils/moveCalculator';
-import { changeHistory, checkHistory } from './versions/standard/history';
-import {
-  checkGame,
-  executeMove,
-  getBoardAsArray,
-  isPieceTurn,
-} from './versions/standard/game';
-import { Move, Moveset } from './types/types';
-import { movesetMap } from './versions/standard/movesets';
-import { fairyMovesetMap } from './versions/fairy/fairyMovesets';
-import {
-  checkGameFairy,
-  executeFairyMove,
-  getBoardFairy,
-  isPieceTurnFairy,
-} from './versions/fairy/fairyGame';
-import {
-  changeHistoryFariy,
-  checkHistoryFairy,
-} from './versions/fairy/fairyHistory';
+
+import { Move } from './types/types';
+import { createGameObjects } from './utils/gameFactory';
 
 /* 
   App is responsible for using the correct version of everything. That means we import from version here
 */
-
-type Version = {
-  movesetMap: Record<string, Moveset[]>;
-  isPieceTurn: (piece: string) => boolean;
-  getBoard: () => string[];
-  executeMove: (move: Move) => string[];
-  checkGame: (movesetMap: Record<string, Moveset[]>, move: Move) => boolean;
-  checkHistory: (move: Move) => boolean;
-  changeHistory: (move: Move) => void;
-};
-
-const standardVersion: Version = {
-  movesetMap,
-  isPieceTurn,
-  getBoard: getBoardAsArray,
-  executeMove,
-  checkGame,
-  checkHistory,
-  changeHistory,
-};
-
-const fairyVersion: Version = {
-  movesetMap: fairyMovesetMap,
-  isPieceTurn: isPieceTurnFairy,
-  getBoard: getBoardFairy,
-  executeMove: executeFairyMove,
-  checkGame: checkGameFairy,
-  checkHistory: checkHistoryFairy,
-  changeHistory: changeHistoryFariy,
-};
-
-const versionMap: Record<string, Version> = {
-  standard: standardVersion,
-  fairy: fairyVersion,
-};
 
 function App() {
   const [version, setVersion] = useState('standard');
@@ -74,14 +22,11 @@ function App() {
     checkGame,
     checkHistory,
     changeHistory,
-  } = versionMap[version];
-
-  console.log(getBoard().join(''));
+  } = createGameObjects(version);
 
   const [lastClicked, setLastClicked] = useState(-1);
   const [legalMoves, setLegalMoves] = useState<Move[]>([]);
   const [board, setBoard] = useState(getBoard());
-
 
   useEffect(() => {
     setBoard(getBoard());
