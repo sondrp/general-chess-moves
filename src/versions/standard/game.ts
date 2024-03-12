@@ -25,11 +25,11 @@ export function executeMove(move: Move) {
   const board = move.result.split('')
 
   const { square, tag } = move
-  if (tag === 'P' && ~~(square / 16) === 0) {
+  if (tag === 'P' && ~~(square / 8) === 0) {
     board[square] = 'Q'
   }
 
-  if (tag === 'p' && ~~(square / 16) === 7) {
+  if (tag === 'p' && ~~(square / 8) === 7) {
     board[square] = 'q'
   }
 
@@ -65,8 +65,8 @@ function isKingInCheck(movesetMap: Record<string, Moveset[]>, move: Move) {
 const tagToCastleSquares: Record<string, number[]> = {
   'q': [2, 3, 4],
   'k': [4, 5, 6],
-  'Q': [114, 115, 116],
-  'K': [116, 117, 118],
+  'Q': [58, 59, 60],
+  'K': [60, 61, 62],
 }
 
 /* Return TRUE only if the move is attempting illegal castle */
@@ -92,7 +92,7 @@ export function isPieceTurn(piece: string) {
 const piece = /[a-zA-Z]/;
 const black = /[a-z]/;
 
-export function calculateEnemyCover(
+function calculateEnemyCover(
   movesetMap: Record<string, Moveset[]>,
   board: string[],
   whitePlaying: boolean
