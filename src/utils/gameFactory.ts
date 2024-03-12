@@ -1,4 +1,5 @@
-import { Moveset, Move } from "../types/types";
+import { Moveset } from "../types/classes";
+import { Move } from "../types/types";
 import { isPieceTurnFairy, getBoardFairy, executeFairyMove, checkGameFairy } from "../versions/fairy/fairyGame";
 import { checkHistoryFairy, changeHistoryFariy } from "../versions/fairy/fairyHistory";
 import { fairyMovesetMap } from "../versions/fairy/fairyMovesets";

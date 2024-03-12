@@ -1,166 +1,121 @@
-import { Moveset } from "../../types/types";
-
-// welcome to regex hell, good luck debugging this
-const occupied = /.\w/;
-
-const enemies = /[A-Z][a-z]|[a-z][A-Z]/;
-const friends = /[A-Z][A-Z]|[a-z][a-z]/;
-
-const notEnemies = /[A-Z][A-Z ]|[a-z][a-z ]/;
-
-const beam = {
-  stop: friends,
-  addBreak: enemies,
-};
+import { Mb, Moveset } from "../../types/classes";
+import { enemies, notEnemies, occupied } from "../../utils/regs";
 
 
-
-const rookMoveset: Moveset[] = [
-  {
-    directions: ['E', 'S', 'W', 'N'],
-    ...beam,
-  },
+const rook = [
+  new Mb().directions(['E', 'S', 'W', 'N']).stopAfter(enemies).build(),
 ];
 
-const knightMoveset: Moveset[] = [
-  {
-    directions: ['NNE', 'EEN', 'EES', 'SSE', 'SSW', 'WWS', 'WWN', 'NNW'],
-    stop: friends,
-  },
+const knight = [
+  new Mb()
+    .directions(['NNE', 'EEN', 'EES', 'SSE', 'SSW', 'WWS', 'WWN', 'NNW'])
+    .build(),
 ];
 
-const bishopMoveset: Moveset[] = [
-  {
-    directions: ['NE', 'SE', 'SW', 'NW'],
-    ...beam,
-  },
+const bishop = [
+  new Mb().directions(['NE', 'SE', 'SW', 'NW']).stopAfter(enemies).build(),
 ];
 
-const queenMoveset: Moveset[] = [
-  {
-    directions: ['NE', 'E', 'SE', 'S', 'SW', 'W', 'NW', 'N'],
-    ...beam,
-  },
+const queen = [
+  new Mb()
+    .directions(['NE', 'E', 'SE', 'S', 'SW', 'W', 'NW', 'N'])
+    .stopAfter(enemies)
+    .build(),
 ];
 
-const whiteKingMoveset: Moveset[] = [
-  {
-    directions: ['NE', 'E', 'SE', 'S', 'SW', 'W', 'NW', 'N'],
-    stop: friends,
-  },
-  {
-    directions: ['EE'],
-    stop: friends,
-    boardCondition: /I  R$/,
-    replacement: ' RK ',
-    tag: 'K',
-  },
-  {
-    directions: ['WW'],
-    boardCondition: /R   I(...)$/,
-    replacement: '  KR $1',
-    tag: 'Q',
-  },
+const whiteKing = [
+  new Mb().directions(['NE', 'E', 'SE', 'S', 'SW', 'W', 'NW', 'N']).build(),
+  new Mb()
+    .directions(['EE'])
+    .boardCondition(/I  R$/)
+    .replacement(' RK ')
+    .tag('K')
+    .build(),
+  new Mb()
+    .directions(['WW'])
+    .boardCondition(/R   I(...)$/)
+    .replacement('  KR $1')
+    .tag('Q')
+    .build(),
 ];
 
-const blackKingMoveset: Moveset[] = [
-  {
-    directions: ['NE', 'E', 'SE', 'S', 'SW', 'W', 'NW', 'N'],
-    stop: friends,
-  },
-  {
-    directions: ['EE'],
-    stop: friends,
-    boardCondition: /^(....)I  r/,
-    replacement: '$1 rk ',
-    tag: 'k',
-  },
-  {
-    directions: ['WW'],
-    stop: friends,
-    boardCondition: /^r   I/,
-    replacement: '  kr ',
-    tag: 'q',
-  },
+const blackKing = [
+  new Mb().directions(['NE', 'E', 'SE', 'S', 'SW', 'W', 'NW', 'N']).build(),
+  new Mb()
+    .directions(['EE'])
+    .boardCondition(/^(....)I  r/)
+    .replacement('$1 rk ')
+    .tag('k')
+    .build(),
+  new Mb()
+    .directions(['WW'])
+    .boardCondition(/^r   I/)
+    .replacement('  kr ')
+    .tag('q')
+    .build(),
 ];
 
-const whitepawnMoveset: Moveset[] = [
-  {
-    directions: ['NE', 'NW'],
-    stop: notEnemies,
-    tag: 'P'
-  },
-  {
-    directions: ['N'],
-    stop: occupied,
-    tag: 'P'
-  },
-  {
-    directions: ['NN'],
-    stop: occupied,
-    boardCondition: / .{7}I.{8,15}$/,
-    tag: 'whitePawnDoubleForward'
-  },
-  {
-    directions: ['NE'],
-    stop: occupied,
-    boardCondition: / (.{6})Ip(.{32,38})$/,
-    replacement: 'P$1  $2',
-    tag: 'enPassant',
-  },
-  {
-    directions: ['NW'],
-    stop: occupied,
-    boardCondition: / (.{7})pI(.{32,38})$/,
-    replacement: 'P$1  $2',
-    tag: 'enPassant',
-  },
+const whitePawn = [
+  new Mb().directions(['NE', 'NW']).stopBefore(notEnemies).tag('P').build(),
+  new Mb().directions(['N']).stopBefore(occupied).tag('P').build(),
+  new Mb()
+    .directions(['NN'])
+    .stopBefore(occupied)
+    .boardCondition(/ .{7}I.{8,15}$/)
+    .tag('whitePawnDoubleForward')
+    .build(),
+  new Mb()
+    .directions(['NE'])
+    .stopBefore(occupied)
+    .boardCondition(/ (.{6})Ip(.{32,38})$/)
+    .replacement('P$1  $2')
+    .tag('enPassant')
+    .build(),
+  new Mb()
+    .directions(['NW'])
+    .stopBefore(occupied)
+    .boardCondition(/ (.{7})pI(.{32,38})$/)
+    .replacement('P$1  $2')
+    .tag('enPassant')
+    .build(),
 ];
 
-const blackpawnMoveset: Moveset[] = [
-  {
-    directions: ['SE', 'SW'],
-    stop: notEnemies,
-    tag: 'p',
-  },
-  {
-    directions: ['S'],
-    stop: occupied,
-    tag: 'p',
-  },
-  {
-    directions: ['SS'],
-    stop: occupied,
-    boardCondition: /^.{8,15}I.{7} /,
-    tag: 'blackPawnDoubleForward'
-  },
-  {
-    directions: ['SW'],
-    stop: occupied,
-    boardCondition: /^(.{32,38})PI(.{6}) /,
-    replacement: '$1  $2p',
-    tag: 'enPassant',
-  },
-  {
-    directions: ['SE'],
-    stop: occupied,
-    boardCondition: /^(.{32,38})IP(.{7}) /,
-    replacement: '$1  $2p',
-    tag: 'enPassant',
-  },
+const blackPawn = [
+  new Mb().directions(['SE', 'SW']).stopBefore(notEnemies).tag('p').build(),
+  new Mb().directions(['S']).stopBefore(occupied).tag('p').build(),
+  new Mb()
+    .directions(['SS'])
+    .stopBefore(occupied)
+    .boardCondition(/^.{8,15}I.{7} /)
+    .tag('blackPawnDoubleForward')
+    .build(),
+  new Mb()
+    .directions(['SE'])
+    .stopBefore(occupied)
+    .boardCondition(/^(.{32,38})IP(.{7}) /)
+    .replacement('$1  $2p')
+    .tag('enPassant')
+    .build(),
+  new Mb()
+    .directions(['SW'])
+    .stopBefore(occupied)
+    .boardCondition(/^(.{32,38})PI(.{6}) /)
+    .replacement('$1  $2p')
+    .tag('enPassant')
+    .build(),
 ];
 
 export const movesetMap: Record<string, Moveset[]> = {
-    r: rookMoveset,
-    R: rookMoveset,
-    n: knightMoveset,
-    N: knightMoveset,
-    b: bishopMoveset,
-    B: bishopMoveset,
-    q: queenMoveset,
-    Q: queenMoveset,
-    k: blackKingMoveset,
-    K: whiteKingMoveset,
-    P: whitepawnMoveset,
-    p: blackpawnMoveset,
-  };
+  r: rook,
+  R: rook,
+  n: knight,
+  N: knight,
+  b: bishop,
+  B: bishop,
+  q: queen,
+  Q: queen,
+  k: blackKing,
+  K: whiteKing,
+  P: whitePawn,
+  p: blackPawn,
+};

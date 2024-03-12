@@ -10,7 +10,8 @@ const white = /[A-Z]/;
 const blackKing = /k/;
 const whiteKing = /K/;
 
-import { Move, Moveset, State } from '../../types/types';
+import { Moveset } from '../../types/classes';
+import { Move, State } from '../../types/types';
 import { moveCalculator } from '../../utils/moveCalculator';
 
 export function getBoardAsArray() {

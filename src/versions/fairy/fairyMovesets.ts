@@ -1,47 +1,27 @@
-import { Moveset } from "../../types/types";
+import { Mb, Moveset } from "../../types/classes"
 
-const friends = /[A-Z][A-Z]|[a-z][a-z]/;
-
-const wazir: Moveset[] = [
-    {
-        directions: ['E', 'S', 'W', 'N'],
-        stop: friends
-    }
+const wazir = [
+    new Mb().directions(['E', 'S', 'W', 'N']).build()
 ]
 
-const ferz: Moveset[] = [
-    {
-        directions: ['NE', 'SE', 'SW', 'NW'],
-        stop: friends
-    }
+const ferz = [
+        new Mb().directions(['NE', 'SE', 'SW', 'NW']).build()
 ]
 
-const dabbaba: Moveset[] = [
-    {
-        directions: ['EE', 'SS', 'WW', 'NN'],
-        stop: friends
-    }
+const dabbaba = [
+        new Mb().directions(['EE', 'SS', 'WW', 'NN']).build()
 ]
 
-const alfil: Moveset[] = [
-    {
-        directions: ['NNEE', 'SSEE', 'SSWW', 'NNWW'],
-        stop: friends
-    }
+const alfil = [
+        new Mb().directions(['NNEE', 'SSEE', 'SSWW', 'NNWW']).build()
 ]
 
-const threeleaper: Moveset[] = [
-    {
-        directions: ['EEE', 'SSS', 'WWW', 'NNN'],
-        stop: friends
-    }
+const threeleaper = [
+        new Mb().directions(['EEE', 'SSS', 'WWW', 'NNN']).build()
 ]
 
-const camel: Moveset[] = [
-    {
-        directions: ['NNNE', 'EEEN', 'SSSE', 'SSSW', 'WWWS', 'WWWN', 'NNNW'],
-        stop: friends
-    }
+const camel = [
+        new Mb().directions(['NNNE', 'EEEN', 'SSSE', 'SSSW', 'WWWS', 'WWWN', 'NNNW']).build()
 ]
 
 
