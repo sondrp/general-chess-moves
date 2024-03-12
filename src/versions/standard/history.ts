@@ -1,5 +1,5 @@
 import { Move } from "../../types/types";
-import { parseDirection } from "../../utils/common";
+import { parseDirection } from "../../utils/inBounds";
 
 /* 2. Define history object */
 const gameHistory = {
@@ -22,9 +22,9 @@ export function checkHistory(move: Move): boolean {
     return true
 }
 
-const rookH1 = /R.{8}$/
-const kingF1 = /K.{11}$/
-const rookA1 = /R.{15}$/
+const rookH1 = /R$/
+const kingF1 = /K...$/
+const rookA1 = /R.{7}$/
 
 const rookH8 = /^.{7}r/
 const kingF8 = /^.{4}k/
@@ -69,4 +69,6 @@ export function changeHistory(move: Move) {
     if (!kingF1.test(result)) {
         gameHistory.castle = gameHistory.castle.replace(/[KQ]/g, '')
     }
+
+    console.log(gameHistory)
 }

@@ -6,9 +6,8 @@ type BoardTextAreaProps = {
 };
 
 const boardToFen = (board: string[]): string => {
-  return Array.from({ length: 8 }, (_, i) => board.slice(i * 16, (i + 1) * 16)) // split array into rows
+  return Array.from({ length: 8 }, (_, i) => board.slice(i * 8, (i + 1) * 8)) // split array into rows
     .map((row) => row.join(''))                                                 // join rows into a string
-    .map((row) => row.substring(0, 8))                                          // cut the padding off
     .map((row) => row.replace(/\s+/g, (match) => match.length.toString()))      // replace space with the length of the space
     .join('/');                                                                 // combine into fen format
 };
@@ -37,11 +36,10 @@ export default function FenTextArea(props: BoardTextAreaProps) {
     boardstring = boardstring.replace(/\d/g, (match) =>
       ' '.repeat(parseInt(match))
     ); // replace numbers with whitespace of that length
-    boardstring = boardstring.replace(/\//g, '--------'); // Replace slash with padding
-    boardstring += '--------'                             // Add padding for the last row aswell
+    boardstring = boardstring.replace(/\//g, ''); // Remove slashes
 
-    // The board cannot end up with anything other than 64 squares (and 64 padding)
-    if (boardstring.length !== 128) {
+    // The board cannot end up with anything other than 64 squares
+    if (boardstring.length !== 64) {
       setError('at least one row has incorrect length');
       return;
     }

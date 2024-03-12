@@ -2,7 +2,7 @@
 
 const gameState: State = {
   turn: true,
-  board: 'rnbqkbnr--------pppppppp--------        --------        --------        --------        --------PPPPPPPP--------RNBQKBNR--------',
+  board: 'rnbqkbnrpppppppp                                PPPPPPPPRNBQKBNR',
   gameActive: true
 };
 
@@ -11,7 +11,7 @@ const blackKing = /k/;
 const whiteKing = /K/;
 
 import { Move, Moveset, State } from '../../types/types';
-import { calculateEnemyCover } from '../../utils/common';
+import { moveCalculator } from '../../utils/moveCalculator';
 
 export function getBoardAsArray() {
   return gameState.board.split('')
@@ -87,4 +87,19 @@ function illegalCastle(movesetMap: Record<string, Moveset[]>, move: Move) {
 
 export function isPieceTurn(piece: string) {
   return white.test(piece) === gameState.turn;
+}
+
+const piece = /[a-zA-Z]/;
+const black = /[a-z]/;
+
+export function calculateEnemyCover(
+  movesetMap: Record<string, Moveset[]>,
+  board: string[],
+  whitePlaying: boolean
+): Move[] {
+  return board
+    .map((_, i) => i) // need to use the index in move calculation.
+    .filter((square) => piece.test(board[square])) // filter empty squares
+    .filter((piece) => black.test(board[piece]) === whitePlaying) // filter
+    .flatMap((enemy) => moveCalculator(movesetMap, board, enemy));
 }

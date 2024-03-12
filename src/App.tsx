@@ -13,7 +13,7 @@ function App() {
 
   const { handleSquareClick, legalMoves, lastClicked, board, setBoard } =
     useGame(version);
-
+    
   return (
     <div className='min-h-screen p-10'>
       <div className='flex gap-10'>

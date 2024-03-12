@@ -20,7 +20,7 @@ export default function Board(props: BoardProps) {
         <CoordinateNumbers />
         <div className='relative'>
           <div className='grid grid-cols-8 xl:w-[40rem] h-fit'>
-            {Array.from({ length: 128 }, (_, index) => (
+            {Array.from({ length: 64 }, (_, index) => (
               <Square
                 key={index}
                 index={index}

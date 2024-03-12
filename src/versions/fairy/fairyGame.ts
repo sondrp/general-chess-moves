@@ -3,7 +3,7 @@ import { Move, Moveset, State } from '../../types/types';
 const gameState: State = {
   turn: true,
   board:
-    '        -------- k q b  --------        -------- n p K  --------        -------- Q R B  --------      N --------        --------',
+    '         k q b           n p K           Q R B        N         ',
   gameActive: true,
 };
 

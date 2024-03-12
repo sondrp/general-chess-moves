@@ -51,13 +51,13 @@ const whiteKingMoveset: Moveset[] = [
   {
     directions: ['EE'],
     stop: friends,
-    boardCondition: /I  R(.{8})$/,
-    replacement: ' RK $1',
+    boardCondition: /I  R$/,
+    replacement: ' RK ',
     tag: 'K',
   },
   {
     directions: ['WW'],
-    boardCondition: /R   I(.{11})$/,
+    boardCondition: /R   I(...)$/,
     replacement: '  KR $1',
     tag: 'Q',
   },
@@ -71,7 +71,7 @@ const blackKingMoveset: Moveset[] = [
   {
     directions: ['EE'],
     stop: friends,
-    boardCondition: /^(.{4})I  r/,
+    boardCondition: /^(....)I  r/,
     replacement: '$1 rk ',
     tag: 'k',
   },
@@ -98,20 +98,20 @@ const whitepawnMoveset: Moveset[] = [
   {
     directions: ['NN'],
     stop: occupied,
-    boardCondition: / .{15}I.{24,31}$/,
+    boardCondition: / .{7}I.{8,15}$/,
     tag: 'whitePawnDoubleForward'
   },
   {
     directions: ['NE'],
     stop: occupied,
-    boardCondition: / (.{14})Ip(.{72,78})$/,
+    boardCondition: / (.{6})Ip(.{32,38})$/,
     replacement: 'P$1  $2',
     tag: 'enPassant',
   },
   {
     directions: ['NW'],
     stop: occupied,
-    boardCondition: / (.{15})pI(.{72,78})$/,
+    boardCondition: / (.{7})pI(.{32,38})$/,
     replacement: 'P$1  $2',
     tag: 'enPassant',
   },
@@ -131,20 +131,20 @@ const blackpawnMoveset: Moveset[] = [
   {
     directions: ['SS'],
     stop: occupied,
-    boardCondition: /^.{16,23}I.{15} /,
+    boardCondition: /^.{8,15}I.{7} /,
     tag: 'blackPawnDoubleForward'
   },
   {
     directions: ['SW'],
     stop: occupied,
-    boardCondition: /^(.{64,70})PI(.{14}) /,
+    boardCondition: /^(.{32,38})PI(.{6}) /,
     replacement: '$1  $2p',
     tag: 'enPassant',
   },
   {
     directions: ['SE'],
     stop: occupied,
-    boardCondition: /^(.{64,70})IP(.{15}) /,
+    boardCondition: /^(.{32,38})IP(.{7}) /,
     replacement: '$1  $2p',
     tag: 'enPassant',
   },

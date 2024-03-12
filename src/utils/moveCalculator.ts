@@ -5,7 +5,7 @@
 */
 
 import { Move, Moveset } from '../types/types';
-import { isInBounds, parseDirection } from './common';
+import { isInBounds, parseDirection } from './inBounds';
 
 export function moveCalculator(
   movesetMap: Record<string, Moveset[]>,
@@ -21,12 +21,13 @@ export function moveCalculator(
 
   movesets.forEach((moveset) => {
     const { directions, stop, addBreak, boardCondition, replacement, tag } = moveset;
-    const offsets = directions.map(parseDirection);
 
-    offsets.forEach((offset) => {
-      let square = startSquare + offset;
 
-      while (isInBounds(square)) {
+    directions.forEach((direction) => {
+      let square = startSquare;
+      
+      while (isInBounds(square, direction)) {
+        square += parseDirection(direction)
         const moveDescription = board[startSquare] + board[square];
 
         if (shouldStop(moveDescription, stop)) return;
@@ -45,7 +46,6 @@ export function moveCalculator(
           replacement
         );
         moves.push({ square, result, tag });
-        square += offset;
 
         if (shouldBreakAfterAddingMove(moveDescription, addBreak)) return;
       }
@@ -72,11 +72,13 @@ function boardAcceptable(
   startSquare: number,
   boardCondition: RegExp | undefined
 ) {
+  if (!boardCondition) return true
+  
   const boardCopy = [...board];
   boardCopy[startSquare] = 'I'; // To make it possible to match with regex
   const boardstring = boardCopy.join(''); // Need this for boardcheck and replacement
 
-  return !boardCondition || boardCondition.test(boardstring);
+  return boardCondition.test(boardstring);
 }
 
 function makeReplacement(
