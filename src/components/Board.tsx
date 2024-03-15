@@ -27,7 +27,7 @@ export default function Board(props: BoardProps) {
                 handleClick={() => handleSquareClick(index)}
                 greenBg={lastClicked === index && moves.length > 0}
               >
-                {/[ernbqkpcza]/i.test(board[index]) && (
+                {/[a-z]/i.test(board[index]) && (
                   <img
                     className='p-2'
                     src={getPieceImage(board[index])}

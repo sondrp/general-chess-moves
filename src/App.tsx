@@ -9,11 +9,12 @@ import { useGame } from './hooks/useGame';
 */
 
 function App() {
-  const [version, setVersion] = useState('standard');
+  const [version, setVersion] = useState('duck');
 
   const { handleSquareClick, legalMoves, lastClicked, board, setBoard } =
     useGame(version);
     
+
   return (
     <div className='min-h-screen p-10'>
       <div className='flex gap-10'>
@@ -47,10 +48,10 @@ function Buttons({ setVersion }: { setVersion: (version: string) => void }) {
         Standard
       </button>
       <button
-        onClick={() => setVersion('fairy')}
+        onClick={() => setVersion('duck')}
         className='text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5'
       >
-        Fairy
+        Duck
       </button>
     </div>
   );
