@@ -129,7 +129,7 @@ export class MovesetDirector {
   rook() {
     return [
       new MovesetBuilder()
-        .directions(['E', 'S', 'W', 'N'])
+        .directions(['(E)', '(S)', '(W)', '(N)'])
         .stopAfter(enemies)
         .build(),
     ];
@@ -146,7 +146,7 @@ export class MovesetDirector {
   bishop() {
     return [
       new MovesetBuilder()
-        .directions(['NE', 'SE', 'SW', 'NW'])
+        .directions(['(NE)', '(SE)', '(SW)', '(NW)'])
         .stopAfter(enemies)
         .build(),
     ];
@@ -155,7 +155,7 @@ export class MovesetDirector {
   queen() {
     return [
       new MovesetBuilder()
-        .directions(['NE', 'E', 'SE', 'S', 'SW', 'W', 'NW', 'N'])
+        .directions(['(NE)', '(E)', '(SE)', '(S)', '(SW)', '(W)', '(NW)', '(N)'])
         .stopAfter(enemies)
         .build(),
     ];
