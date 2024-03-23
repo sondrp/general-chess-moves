@@ -7,11 +7,12 @@ import {
   occupied,
 } from '../utils/regs';
 
-/* Need to expand this, to be able to reach absolute squares?
-   Also need to expand movesets to have exclude property
+/* 
+  What if we have a class piece with an array of movesets? It makes more sense for everyone I think   
 */
 
 export class Moveset {
+
   constructor(
     public directions: string[],
     public stopBefore: RegExp,
@@ -21,6 +22,10 @@ export class Moveset {
     public boardCondition?: RegExp,
     public replacement?: string
   ) {}
+
+  nextDirection() {
+
+  }
 
   shouldStopBefore(moveDescription: string) {
     return this.stopBefore.test(moveDescription);
@@ -67,7 +72,7 @@ export class Moveset {
 export class MovesetBuilder {
   private d: string[] = [];
   private sb = friends;
-  private sa = always;
+  private sa = never;
   private e = never;
   private t = '';
   private bc: RegExp | undefined;

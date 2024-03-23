@@ -28,7 +28,7 @@ export default function FenTextArea(props: BoardTextAreaProps) {
 
     // Check if the input can be used to setup the board. Checks only for correct pattern
     if (
-      !/^([1-8ernbqkpazc]{1,8}\/){7}[1-8ernbqkpazc]{1,8}$/i.test(boardstring)
+      !/^([1-8a-z]{1,8}\/){7}[1-8a-z]{1,8}$/i.test(boardstring)
     ) {
       setError('illegal characters and/or wrong format');
       return;

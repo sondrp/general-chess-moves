@@ -1,5 +1,5 @@
 import { GameHistory, Move } from '../../types/types';
-import { parseDirection } from '../../utils/inBounds';
+import { parseDirection } from '../../utils/MoveQueue';
 
 const rookH1 = /R$/;
 const kingF1 = /K...$/;
