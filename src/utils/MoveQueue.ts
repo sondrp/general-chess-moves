@@ -24,9 +24,7 @@ export const isInBounds = (index: number, direction: string) => {
   const newX = x + dx;
   const newY = y + dy;
   
-  const ib = 0 <= newX && newX < 8 && 0 <= newY && newY < 8;
-  console.log(ib)
-  return ib
+ return 0 <= newX && newX < 8 && 0 <= newY && newY < 8;
 };
 
 export const parseDirection = (direction: string): number => {
@@ -51,9 +49,9 @@ const parseRepetitions = (repetition: string): number => {
   return parseInt(repetition, 10)
 } 
 
-const directionRegex = /([ESWN]+)([\d\*]*)/g;
 
 export class MoveQueue {
+  private directionRegex = /([ESWN]+)([\d\*]*)/g;
   private index = 0; // current index in the queue
   private queue: number[] = []; // all the squares (in order) that can be moved to
   
@@ -62,7 +60,7 @@ export class MoveQueue {
     let currentSquare = startSquare   // the starting point for the movement
     
     let match;
-    outer: while ((match = directionRegex.exec(direction)) !== null) {
+    while ((match = this.directionRegex.exec(direction)) !== null) {
  
       const currentDirection = match[1]   // Needed to make sure piece does not cross border (cannot be determined with absolute offset)
       const offset = parseOffset(currentDirection) // absolute offset to find next square
@@ -70,7 +68,7 @@ export class MoveQueue {
       
       let i = 0
       while (i < repetitions) {
-        if (!isInBounds(currentSquare, currentDirection)) break outer 
+        if (!isInBounds(currentSquare, currentDirection)) return 
 
         currentSquare += offset
         i++
