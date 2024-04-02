@@ -1,6 +1,3 @@
-
-/* Split the beam moves from the normal moves */
-
 /* Used to check border crossings */
 const directionMap: Record<string, number> = {
   E: 1,
@@ -27,7 +24,9 @@ export const isInBounds = (index: number, direction: string) => {
   const newX = x + dx;
   const newY = y + dy;
   
-  return 0 <= newX && newX < 8 && 0 <= newY && newY < 8;
+  const ib = 0 <= newX && newX < 8 && 0 <= newY && newY < 8;
+  console.log(ib)
+  return ib
 };
 
 export const parseDirection = (direction: string): number => {
@@ -35,33 +34,48 @@ export const parseDirection = (direction: string): number => {
   return dx + dy * 8;
 };
 
-const directionRegex = /^([ESWN]*)\(?([ESWN]*)\)?(\d)?$/;
+const offsetMap: Record<string, number> = {
+  E: 1,
+  S: 8,
+  W: -1,
+  N: -8
+}
+
+const parseOffset = (offset: string): number => {
+  return offset.split('').reduce((sum, d) => sum + offsetMap[d], 0)
+}
+
+const parseRepetitions = (repetition: string): number => {
+  if (repetition === '*') return 7
+  if (repetition === '') return 1
+  return parseInt(repetition, 10)
+} 
+
+const directionRegex = /([ESWN]+)([\d\*]*)/g;
 
 export class MoveQueue {
   private index = 0; // current index in the queue
   private queue: number[] = []; // all the squares (in order) that can be moved to
   
   constructor(startSquare: number, direction: string) {
-    /* Let's assume only one star match max at first. */
     
-    const match = directionRegex.exec(direction);
+    let currentSquare = startSquare   // the starting point for the movement
     
-    if (!match) throw Error('Illegal direction given to MoveQueue');
-    const [_, base, beam, quantity] = match;
-    
-    let offset = base ? base : beam;
-    let square = startSquare;
-    
-    let count = 0;
-    const maxCount = quantity ? parseInt(quantity) : 100;
-    
-    while (isInBounds(square, offset) && count < maxCount) {
-      count++;
-      square += parseDirection(offset);
-      this.queue.push(square);
+    let match;
+    outer: while ((match = directionRegex.exec(direction)) !== null) {
+ 
+      const currentDirection = match[1]   // Needed to make sure piece does not cross border (cannot be determined with absolute offset)
+      const offset = parseOffset(currentDirection) // absolute offset to find next square
+      const repetitions = parseRepetitions(match[2])    // number of moves in this currentDirection
       
-      offset = beam;
-      if (!offset) break
+      let i = 0
+      while (i < repetitions) {
+        if (!isInBounds(currentSquare, currentDirection)) break outer 
+
+        currentSquare += offset
+        i++
+        this.queue.push(currentSquare)
+      }
     }
   }
   
