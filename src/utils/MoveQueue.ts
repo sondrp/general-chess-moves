@@ -49,7 +49,6 @@ const parseRepetitions = (repetition: string): number => {
   return parseInt(repetition, 10)
 } 
 
-
 export class MoveQueue {
   private directionRegex = /([ESWN]+)([\d\*]*)/g;
   private index = 0; // current index in the queue
