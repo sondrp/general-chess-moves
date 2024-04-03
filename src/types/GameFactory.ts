@@ -7,6 +7,7 @@ import { duckMovesetMap } from '../versions/duck/movesets';
 import { DuckGameState } from '../versions/duck/game';
 import { TestGameState } from '../versions/experiment/game';
 import { testMovesetMap } from '../versions/experiment/movesets';
+import { FisherGameState } from '../versions/fisher/game';
 
 type FactoryResult = {
   moveCalculator: MoveCalculator;
@@ -37,6 +38,14 @@ export class GameFactory {
       const gameState = new TestGameState(moveCalculator);
       const gameHistory = new StandardGameHistory();
       
+      return { moveCalculator, gameState, gameHistory };
+    }
+    
+    if (version === 'fisher') {
+      const moveCalculator = new MoveCalculator(standardMovesetMap);
+      const gameState = new FisherGameState(moveCalculator);
+      const gameHistory = new StandardGameHistory();
+
       return { moveCalculator, gameState, gameHistory };
     }
 

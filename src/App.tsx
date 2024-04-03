@@ -9,7 +9,7 @@ import { useGame } from './hooks/useGame';
 */
 
 function App() {
-  const [version, setVersion] = useState('test');
+  const [version, setVersion] = useState('fisher');
 
   const { handleSquareClick, legalMoves, lastClicked, board, setBoard } =
     useGame(version);

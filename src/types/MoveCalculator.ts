@@ -15,7 +15,7 @@ export class MoveCalculator {
     const piece = board[startSquare];
     const movesets = this.movesetMap[piece];
 
-    if (!movesets) throw Error('Moveset could not be found for this piece');
+    if (!movesets) throw Error(`Moveset could not be found for this piece: ${piece}`);
 
     movesets.forEach((moveset) => {
       
