@@ -1,13 +1,21 @@
 import { MoveQueue } from '../utils/MoveQueue';
 import { Moveset } from '../types/Moveset';
 import { Move } from '../types/types';
+import { Piece } from './Piece';
 
 const piece = /[a-zA-Z]/;
 const black = /[a-z]/;
 
+/* 
+  Rework move calculator.
+  It will now contain all the action checks here. This is so obviously better because we are creating a billion actions
+  (no need to create the same functions each time).
+
+  It should also have access to historic and game specific filters. This is to allow use in both game over checker and e
+*/
 
 export class MoveCalculator {
-  constructor(private movesetMap: Record<string, Moveset[]>) {}
+  constructor(private pieceMap: Record<string, Piece>) {}
 
   public calculate(board: string[], startSquare: number) {
     const moves: Move[] = [];

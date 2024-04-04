@@ -39,8 +39,6 @@ export class StandardGameState implements GameState {
       board[square] = 'q';
     }
 
-    /* NEED TO ALSO CHECK FOR GAME OVER AFTER EXECUTING A MOVE !!! */
-
     return board;
   }
 

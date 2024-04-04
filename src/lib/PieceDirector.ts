@@ -1,7 +1,7 @@
 import { notEnemies, occupied } from "../utils/regs"
 import { PieceBuilder } from "./PieceBuilder"
 
-class PieceDirector {
+export class PieceDirector {
 
     rook(pieceBuilder: PieceBuilder) {
       return pieceBuilder.directions('E*', 'S*', 'W*', 'N*').buildAction()

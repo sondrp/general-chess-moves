@@ -7,10 +7,9 @@ import {
   occupied,
 } from '../utils/regs';
 
-/* 
-  What if we have a class piece with an array of movesets? It makes more sense for everyone I think   
-*/
 
+
+/* THESE FUNCTIONS SHOULD NOW BE DONE IN THE CALCULATOR TODO TODO TODO */
 export class Moveset {
 
   constructor(
