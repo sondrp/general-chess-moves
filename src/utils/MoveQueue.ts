@@ -8,11 +8,11 @@ const directionMap: Record<string, number> = {
 
 const decomposeDirection = (direction: string) => {
   const dx = direction
-  .split('')
-  .reduce((sum, d) => (/^[EW]$/.test(d) ? sum + directionMap[d] : sum), 0);
+    .split('')
+    .reduce((sum, d) => (/^[EW]$/.test(d) ? sum + directionMap[d] : sum), 0);
   const dy = direction
-  .split('')
-  .reduce((sum, d) => (/^[SN]$/.test(d) ? sum + directionMap[d] : sum), 0);
+    .split('')
+    .reduce((sum, d) => (/^[SN]$/.test(d) ? sum + directionMap[d] : sum), 0);
   return [dx, dy];
 };
 
@@ -20,11 +20,11 @@ export const isInBounds = (index: number, direction: string) => {
   const x = index % 8;
   const y = ~~(index / 8);
   const [dx, dy] = decomposeDirection(direction);
-  
+
   const newX = x + dx;
   const newY = y + dy;
-  
- return 0 <= newX && newX < 8 && 0 <= newY && newY < 8;
+
+  return 0 <= newX && newX < 8 && 0 <= newY && newY < 8;
 };
 
 export const parseDirection = (direction: string): number => {
@@ -36,51 +36,62 @@ const offsetMap: Record<string, number> = {
   E: 1,
   S: 8,
   W: -1,
-  N: -8
-}
+  N: -8,
+};
 
 const parseOffset = (offset: string): number => {
-  return offset.split('').reduce((sum, d) => sum + offsetMap[d], 0)
-}
+  return offset.split('').reduce((sum, d) => sum + offsetMap[d], 0);
+};
 
 const parseRepetitions = (repetition: string): number => {
-  if (repetition === '*') return 7
-  if (repetition === '') return 1
-  return parseInt(repetition, 10)
-} 
+  if (repetition === '*') return 7;
+  if (repetition === '') return 1;
+  return parseInt(repetition, 10);
+};
 
-export class MoveQueue {
+/**
+ * Turns a string description of a move into an array of squares to land on.
+ * This requires the starting square, since it will stop when the move crosses the border.
+ * @property directionRegex interprets the direction. Examples (from starting square x):
+ * E -> [x + 1]
+ * EE -> [x + 2]
+ * E* -> [x + 1, x + 2, x + 3, ...]
+ * E2S -> [x + 1, x + 2, x + 10]
+ * EES -> [x + 10]
+ */
+export class MoveQueue implements Iterable<number> {
   private directionRegex = /([ESWN]+)([\d\*]*)/g;
-  private index = 0; // current index in the queue
   private queue: number[] = []; // all the squares (in order) that can be moved to
-  
+
   constructor(startSquare: number, direction: string) {
-    
-    let currentSquare = startSquare   // the starting point for the movement
-    
+    let currentSquare = startSquare; // the starting point for the movement
+
     let match;
     while ((match = this.directionRegex.exec(direction)) !== null) {
- 
-      const currentDirection = match[1]   // Needed to make sure piece does not cross border (cannot be determined with absolute offset)
-      const offset = parseOffset(currentDirection) // absolute offset to find next square
-      const repetitions = parseRepetitions(match[2])    // number of moves in this currentDirection
-      
-      let i = 0
-      while (i < repetitions) {
-        if (!isInBounds(currentSquare, currentDirection)) return 
+      const currentDirection = match[1]; // Needed to make sure piece does not cross border (cannot be determined with absolute offset)
+      const offset = parseOffset(currentDirection); // absolute offset to find next square
+      const repetitions = parseRepetitions(match[2]); // number of moves in this currentDirection
 
-        currentSquare += offset
-        i++
-        this.queue.push(currentSquare)
+      let i = 0;
+      while (i < repetitions) {
+        if (!isInBounds(currentSquare, currentDirection)) return;
+
+        currentSquare += offset;
+        i++;
+        this.queue.push(currentSquare);
       }
     }
   }
-  
-  hasNext(): boolean {
-    return this.index < this.queue.length;
-  }
+  [Symbol.iterator](): Iterator<number, any, undefined> {
+    let index = 0;
+    const squares = this.queue;
 
-  next(): number {
-    return this.queue[this.index++];
+    return {
+      next(): IteratorResult<number> {
+        return index < squares.length
+          ? { value: squares[index++], done: false }
+          : { value: null, done: true };
+      },
+    };
   }
 }

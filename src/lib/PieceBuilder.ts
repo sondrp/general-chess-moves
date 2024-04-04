@@ -2,9 +2,11 @@ import { Action } from "../types/types";
 import { friends, enemies, never } from "../utils/regs";
 import { Piece } from "./Piece";
 
+
 const defaultAction: Action = {
     id: '',
     directions: [],
+    cover: true,
     stopBefore: friends,
     stopAfter: enemies,
     exclude: never,
@@ -48,6 +50,11 @@ export class PieceBuilder {
     directions(...directions: string[]) {
       this.next.directions = directions;
       return this;
+    }
+
+    cover(cover: boolean) {
+      this.next.cover = cover
+      return this
     }
   
     stopBefore(stopBefore: RegExp) {
