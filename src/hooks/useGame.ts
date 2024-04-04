@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Move } from '../types/types';
-import { GameFactory } from '../types/GameFactory';
+import { GameFactory } from '../lib/GameFactory';
 
 export const useGame = (version: string) => {
   const gameFactory = new GameFactory();

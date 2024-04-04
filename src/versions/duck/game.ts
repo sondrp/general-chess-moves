@@ -1,4 +1,4 @@
-import { MoveCalculator } from "../../types/MoveCalculator";
+import { MoveCalculator } from "../../lib/MoveCalculator";
 import { GameState, Move } from "../../types/types";
 
 const white = /[A-Z]/;

@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import Board from './components/Board';
 import { BehaviourTextArea } from './components/BehaviourInput';
 import PieceSelect from './components/PieceSelect';
@@ -9,7 +8,7 @@ import { useGame } from './hooks/useGame';
 */
 
 function App() {
-  const [version, setVersion] = useState('fisher');
+  const version = 'fisher'
 
   const { handleSquareClick, legalMoves, lastClicked, board, setBoard } =
     useGame(version);
@@ -33,26 +32,6 @@ function App() {
           />
         </div>
       </div>
-      <Buttons setVersion={setVersion} />
-    </div>
-  );
-}
-
-function Buttons({ setVersion }: { setVersion: (version: string) => void }) {
-  return (
-    <div className='mt-10 flex gap-10'>
-      <button
-        onClick={() => setVersion('standard')}
-        className='text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5'
-      >
-        Standard
-      </button>
-      <button
-        onClick={() => setVersion('duck')}
-        className='text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5'
-      >
-        Duck
-      </button>
     </div>
   );
 }

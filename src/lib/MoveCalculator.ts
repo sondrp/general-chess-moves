@@ -1,6 +1,6 @@
 import { MoveQueue } from '../utils/MoveQueue';
-import { Moveset } from './Moveset';
-import { Move } from './types';
+import { Moveset } from '../types/Moveset';
+import { Move } from '../types/types';
 
 const piece = /[a-zA-Z]/;
 const black = /[a-z]/;

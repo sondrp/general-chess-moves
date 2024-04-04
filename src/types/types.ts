@@ -16,3 +16,13 @@ export interface GameState {
   getBoard(): string[]
   isPieceTurn(piece: string): boolean
 }
+
+export type Action = {
+  id: string;
+  directions: string[];
+  stopBefore: RegExp;
+  stopAfter: RegExp;
+  exclude: RegExp;
+  boardCondition: RegExp | undefined;
+  replacement: string | undefined;
+};

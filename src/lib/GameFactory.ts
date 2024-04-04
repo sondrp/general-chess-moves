@@ -1,5 +1,5 @@
 import { MoveCalculator } from './MoveCalculator';
-import { GameHistory, GameState } from './types';
+import { GameHistory, GameState } from '../types/types';
 import { StandardGameState } from '../versions/standard/game';
 import { StandardGameHistory } from '../versions/standard/history';
 import { standardMovesetMap } from '../versions/standard/movesets';
