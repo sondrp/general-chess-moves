@@ -59,9 +59,10 @@ const parseRepetitions = (repetition: string): number => {
  * E2S -> [x + 1, x + 2, x + 10]
  * EES -> [x + 10]
  */
-export class MoveQueue implements Iterable<number> {
+export class MoveQueue {
   private directionRegex = /([ESWN]+)([\d\*]*)/g;
   private queue: number[] = []; // all the squares (in order) that can be moved to
+  private index = 0 // current position in the queue
 
   constructor(startSquare: number, direction: string) {
     let currentSquare = startSquare; // the starting point for the movement
@@ -82,16 +83,12 @@ export class MoveQueue implements Iterable<number> {
       }
     }
   }
-  [Symbol.iterator](): Iterator<number, any, undefined> {
-    let index = 0;
-    const squares = this.queue;
 
-    return {
-      next(): IteratorResult<number> {
-        return index < squares.length
-          ? { value: squares[index++], done: false }
-          : { value: null, done: true };
-      },
-    };
+  hasNext() {
+    return this.index < this.queue.length
+  }
+
+  next() {
+    return this.queue[this.index++]
   }
 }

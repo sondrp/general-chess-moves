@@ -1,7 +1,7 @@
 export type Move = {
   square: number;
   result: string;
-  tag?: string;
+  id: string;
 };
 
 export interface GameHistory {
@@ -10,8 +10,8 @@ export interface GameHistory {
 }
 
 export interface GameState {
-  executeMove(move: Move): string[];
-  checkGame(move: Move): boolean;
+  changeState(move: Move): string[];
+  checkState(move: Move): boolean;
   getBoard(): string[];
   isPieceTurn(piece: string): boolean;
 }

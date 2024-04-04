@@ -1,27 +1,34 @@
-import { MoveCalculator } from './MoveCalculator';
-import { GameHistory, GameState } from '../types/types';
-import { StandardGameState } from '../versions/standard/game';
-import { StandardGameHistory } from '../versions/standard/history';
-import { standardPieceMap } from '../versions/standard/pieceMap';
+import { GameHistory, GameState } from "../types/types";
+import { StandardGameHistory } from "../versions/standard/standardGameHistory";
+import { StandardGameState } from "../versions/standard/standardGameState";
+import { standardPieceMap } from "../versions/standard/standardpieceMap";
+import { MoveCalculator } from "./MoveCalculator";
+import { MoveExecutor } from "./MoveExecutor";
+import { PseudoMoveCalculator } from "./PseudoMoveCalculator";
 
 type FactoryResult = {
   moveCalculator: MoveCalculator;
-  gameState: GameState;
-  gameHistory: GameHistory;
+  moveExecutor: MoveExecutor
 };
 
 export class GameFactory {
 
   create(version: string): FactoryResult {
+    let gameState: GameState
+    let gameHistory: GameHistory
+    let pseudoMoveCalculator: PseudoMoveCalculator
+
 
     if (version === 'standard') {
-      const moveCalculator = new MoveCalculator(standardPieceMap);
-      const gameState = new StandardGameState(moveCalculator);
-      const gameHistory = new StandardGameHistory();
-
-      return { moveCalculator, gameState, gameHistory };
+      pseudoMoveCalculator = new PseudoMoveCalculator(standardPieceMap) 
+      gameState = new StandardGameState(pseudoMoveCalculator)
+      gameHistory = new StandardGameHistory()
+    } else {
+      throw Error(`Game factory does not support ${version} currently`)
     }
-
-    throw Error('Chess version not supported by GameFactory');
+    
+    const moveCalculator = new MoveCalculator(pseudoMoveCalculator, gameState, gameHistory);
+    const moveExecutor = new MoveExecutor(gameState, gameHistory)
+    return { moveCalculator, moveExecutor };
   }
 }
