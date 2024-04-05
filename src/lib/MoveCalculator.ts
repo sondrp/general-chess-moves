@@ -13,7 +13,6 @@ export class MoveCalculator {
 
     const piece = board[square];
 
-    
     if (piece === ' ') return [];
     
     if (!this.gameState.isPieceTurn(piece)) return [];
@@ -23,4 +22,6 @@ export class MoveCalculator {
       .filter((move) => this.gameState.checkState(move)) // filter away moves that are illegal for game specific reasons
       .filter((move) => this.gameHistory.checkHistory(move)); // filter away moves that are illegal for historic reasons
   }
+
+
 }

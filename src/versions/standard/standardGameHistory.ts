@@ -1,5 +1,5 @@
 import { GameHistory, Move } from '../../types/types';
-import { parseDirection } from '../../utils/MoveQueue';
+import { parseDirection } from '../../lib/MoveQueue';
 
 const rookH1 = /R$/;
 const rookA1 = /R.{7}$/;

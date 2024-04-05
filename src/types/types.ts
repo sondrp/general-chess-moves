@@ -13,6 +13,7 @@ export interface GameState {
   changeState(move: Move): string[];
   checkState(move: Move): boolean;
   getBoard(): string[];
+  setBoard(board: string[]): void;
   isPieceTurn(piece: string): boolean;
 }
 
@@ -29,7 +30,7 @@ export interface GameState {
 export type Action = {
   id: string;
   directions: string[];
-  cover: boolean;
+  isCover: boolean;
   stopBefore: RegExp;
   stopAfter: RegExp;
   exclude: RegExp;

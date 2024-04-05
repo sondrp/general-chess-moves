@@ -24,8 +24,10 @@ export class StandardGameState implements GameState {
   changeState(move: Move): string[] {
     gameState.turn = !gameState.turn;
 
+
     const board = move.result.split('');
 
+    
     // Promote pawn should it reach the final rank
     const { square, id } = move;
     if (id === 'P' && ~~(square / 8) === 0) {
@@ -36,13 +38,15 @@ export class StandardGameState implements GameState {
       board[square] = 'q';
     }
 
-    gameState.board = move.result;
-    return gameState.board.split('');
+    gameState.board = board.join("");
+    return board;
   }
 
   /* Confirms that a move does not break a game specific rule. */
   checkState(move: Move): boolean {
-    if (this.pseudoMoveCalculator.isKingInCheck(move.result.split(''), gameState.turn)) return false;
+    const board = move.result.split("")
+ 
+    if (this.pseudoMoveCalculator.isKingInCheck(board, gameState.turn)) return false;
 
     if (this.illegalCastle(move)) return false;
 
@@ -51,6 +55,10 @@ export class StandardGameState implements GameState {
 
   getBoard() {
     return gameState.board.split('');
+  }
+
+  setBoard(board: string[]): void {
+    gameState.board = board.join("")
   }
 
   getBoardAsString() {
@@ -72,12 +80,12 @@ export class StandardGameState implements GameState {
     const squaresToClear = tagToCastleSquares[id];
 
     const board = result.split('');
-    const enemyCover = this.pseudoMoveCalculator.calculateEnemyCover(
+    const enemyCover = this.pseudoMoveCalculator.calculateTeamCover(
       board,
-      gameState.turn
+      !gameState.turn
     );
 
     // if enemy covers relevant square, do not castle
-    return enemyCover.some((move) => squaresToClear.includes(move.square));
+    return enemyCover.some((square) => squaresToClear.includes(square));
   }
 }

@@ -24,4 +24,8 @@ export class MoveExecutor {
         return this.gameState.getBoard()
     }
 
+    setBoard(board: string[]) {
+        this.gameState.setBoard(board)
+    }
+
 }

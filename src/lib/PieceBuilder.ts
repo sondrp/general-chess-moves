@@ -6,7 +6,7 @@ import { Piece } from "./Piece";
 const defaultAction: Action = {
     id: '',
     directions: [],
-    cover: true,
+    isCover: true,
     stopBefore: friends,
     stopAfter: enemies,
     exclude: never,
@@ -52,8 +52,8 @@ export class PieceBuilder {
       return this;
     }
 
-    cover(cover: boolean) {
-      this.next.cover = cover
+    isCover(isCover: boolean) {
+      this.next.isCover = isCover
       return this
     }
   

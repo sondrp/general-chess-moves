@@ -64,8 +64,8 @@ export class MoveQueue {
   private queue: number[] = []; // all the squares (in order) that can be moved to
   private index = 0 // current position in the queue
 
-  constructor(startSquare: number, direction: string) {
-    let currentSquare = startSquare; // the starting point for the movement
+  constructor(private startSquare: number, direction: string) {
+    let currentSquare = this.startSquare; // the starting point for the movement
 
     let match;
     while ((match = this.directionRegex.exec(direction)) !== null) {
@@ -82,6 +82,20 @@ export class MoveQueue {
         this.queue.push(currentSquare);
       }
     }
+  }
+
+  takeUntil(board: string[], condition: RegExp): number[] {
+    const squares: number[] = [] 
+
+    while (this.hasNext()) {
+      const square = this.next()
+      squares.push(square)
+
+      const moveDescription = board[this.startSquare] + board[square]
+      if (condition.test(moveDescription)) break
+    }
+
+    return squares
   }
 
   hasNext() {

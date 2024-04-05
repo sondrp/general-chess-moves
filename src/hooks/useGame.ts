@@ -18,12 +18,18 @@ export const useGame = (version: string) => {
   }, [version])
 
 
+  const handleExternalBoardChange = (board: string[]) => {
+    console.log('External board change')
+    moveExecutor.setBoard(board)
+    setBoard(board)
+  }
+
+
   const handleSquareClick = (square: number): void => {
     setLastClicked(square);
 
     const newBoard = moveExecutor.execute(legalMoves, square)
 
-    
     if (newBoard) {
       setLegalMoves([])
       setBoard(newBoard)
@@ -34,5 +40,5 @@ export const useGame = (version: string) => {
     setLegalMoves(newLegalMoves);
   };
   
-  return { handleSquareClick, legalMoves, lastClicked, board, setBoard };
+  return { handleSquareClick, legalMoves, lastClicked, board, setBoard: handleExternalBoardChange };
 };
