@@ -69,6 +69,10 @@ export class StandardGameState implements GameState {
     return white.test(piece) === gameState.turn;
   }
 
+  getTurn(): boolean {
+    return gameState.turn
+  }
+
 
   /* Return TRUE only if the move is attempting illegal castle */
   private illegalCastle(move: Move): boolean {

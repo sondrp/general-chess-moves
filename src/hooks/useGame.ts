@@ -5,7 +5,7 @@ import { GameFactory } from '../lib/GameFactory';
 export const useGame = (version: string) => {
   const gameFactory = new GameFactory();
 
-  const { moveCalculator, moveExecutor } =
+  const { moveCalculator, moveExecutor, gameOverChecker } =
     gameFactory.create(version);
 
   const [lastClicked, setLastClicked] = useState(-1);
@@ -17,13 +17,11 @@ export const useGame = (version: string) => {
     console.log('version changed')
   }, [version])
 
-
   const handleExternalBoardChange = (board: string[]) => {
     console.log('External board change')
     moveExecutor.setBoard(board)
     setBoard(board)
   }
-
 
   const handleSquareClick = (square: number): void => {
     setLastClicked(square);
@@ -33,6 +31,8 @@ export const useGame = (version: string) => {
     if (newBoard) {
       setLegalMoves([])
       setBoard(newBoard)
+
+      gameOverChecker.checkGameOver(newBoard)
       return
     }
     

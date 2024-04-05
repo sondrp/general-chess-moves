@@ -4,6 +4,10 @@ export type Move = {
   id: string;
 };
 
+export interface GameOverChecker {
+  checkGameOver(board: string[]): boolean
+}
+
 export interface GameHistory {
   checkHistory(move: Move): boolean;
   changeHistory(move: Move): void;
@@ -14,6 +18,7 @@ export interface GameState {
   checkState(move: Move): boolean;
   getBoard(): string[];
   setBoard(board: string[]): void;
+  getTurn(): boolean;
   isPieceTurn(piece: string): boolean;
 }
 

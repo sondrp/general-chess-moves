@@ -20,13 +20,13 @@ export class PieceDirector {
     }
   
     wKing(pieceBuilder: PieceBuilder) {
-      return pieceBuilder.directions('NE', 'E', 'SE', 'S', 'SW', 'W', 'NW', 'N').buildAction()
+      return pieceBuilder.directions('NE', 'E', 'SE', 'S', 'SW', 'W', 'NW', 'N').id('wk').buildAction()
                          .directions('EE').boardCondition(/I  R$/).replacement(' RK ').isCover(false).id('K').buildAction()
                          .directions('WW').boardCondition(/R   I(...)$/).replacement('  KR $1').isCover(false).id('Q').buildAction()
     }
   
     bKing(pieceBuilder: PieceBuilder) {
-      return pieceBuilder.directions('NE', 'E', 'SE', 'S', 'SW', 'W', 'NW', 'N').buildAction()
+      return pieceBuilder.directions('NE', 'E', 'SE', 'S', 'SW', 'W', 'NW', 'N').id('bk').buildAction()
                          .directions('EE').boardCondition(/^(....)I  r/).replacement('$1 rk ').isCover(false).id('k').buildAction()
                          .directions('WW').boardCondition(/^r   I/).replacement('  kr ').isCover(false).id('q').buildAction()
     }

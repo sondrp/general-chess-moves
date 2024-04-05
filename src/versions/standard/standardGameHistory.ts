@@ -43,11 +43,13 @@ export class StandardGameHistory implements GameHistory {
       gameHistory.enPassant = square + parseDirection('N');
     }
 
-    if (id === 'K') {
+    console.log(id)
+
+    if (/wk|[KQ]/.test(id)) {
       gameHistory.castle = gameHistory.castle.replace(/[KQ]/g, '');
     }
 
-    if (id === 'k') {
+    if (/bk|[kq]/.test(id)) {
       gameHistory.castle = gameHistory.castle.replace(/[kq]/g, '');
     }
     // Check if rooks/kings have moved, and update castle rights accordingly.

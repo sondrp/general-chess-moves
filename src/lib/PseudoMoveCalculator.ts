@@ -125,6 +125,7 @@ export class PseudoMoveCalculator {
     // If we are playing a game without king, he cannot be in check
     if (kingHasBeenCaptured.test(board.join(""))) return false
 
+    // return true if one of the moves results in a board without a king
     return board
       .map((_, i) => i)
       .filter((i) => board[i] !== ' ') // allow only occupied squares

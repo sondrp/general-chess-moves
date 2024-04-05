@@ -23,5 +23,7 @@ export class MoveCalculator {
       .filter((move) => this.gameHistory.checkHistory(move)); // filter away moves that are illegal for historic reasons
   }
 
-
+  isKingInCheck(board: string[], whiteKing: boolean) {
+    return this.pseudoMoveCalculator.isKingInCheck(board, whiteKing)
+  }
 }
