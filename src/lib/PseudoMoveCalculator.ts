@@ -63,7 +63,9 @@ export class PseudoMoveCalculator {
 
     if (!piece) throw Error(`Piece does not exist in piecemap: ${piece}`);
 
-    piece.getActions().filter(action => !cover && action.cover).forEach((action) => {
+    console.log("needs rework! Not up to code.")
+
+    piece.getActions().filter(action => !cover && !action.cover).forEach((action) => {
       
       action.directions.forEach((direction) => {
         const moveQueue = new MoveQueue(startSquare, direction);

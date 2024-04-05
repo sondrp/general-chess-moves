@@ -8,7 +8,7 @@ import { useGame } from './hooks/useGame';
 */
 
 function App() {
-  const version = 'fisher'
+  const version = 'standard'
 
   const { handleSquareClick, legalMoves, lastClicked, board, setBoard } =
     useGame(version);

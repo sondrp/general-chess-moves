@@ -1,5 +1,4 @@
 import { GameHistory, GameState, Move } from '../types/types';
-import { Piece } from './Piece';
 import { PseudoMoveCalculator } from './PseudoMoveCalculator';
 
 export class MoveCalculator {
@@ -14,8 +13,9 @@ export class MoveCalculator {
 
     const piece = board[square];
 
+    
     if (piece === ' ') return [];
-
+    
     if (!this.gameState.isPieceTurn(piece)) return [];
 
     return this.pseudoMoveCalculator

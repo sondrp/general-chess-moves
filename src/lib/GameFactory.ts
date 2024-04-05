@@ -1,7 +1,7 @@
 import { GameHistory, GameState } from "../types/types";
 import { StandardGameHistory } from "../versions/standard/standardGameHistory";
 import { StandardGameState } from "../versions/standard/standardGameState";
-import { standardPieceMap } from "../versions/standard/standardpieceMap";
+import { standardPieceMap } from "../versions/standard/standardPieceMap";
 import { MoveCalculator } from "./MoveCalculator";
 import { MoveExecutor } from "./MoveExecutor";
 import { PseudoMoveCalculator } from "./PseudoMoveCalculator";
