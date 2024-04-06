@@ -14,7 +14,8 @@ export class StandardGameOverChecker implements GameOverChecker {
      */
     checkGameOver(board: string[]): boolean {
 
-        const gameOver = this.hasLegalMove(board)
+        const gameOver = !this.hasLegalMove(board)
+        console.log("game over", gameOver)
         if (!gameOver) return false
 
 
@@ -31,9 +32,7 @@ export class StandardGameOverChecker implements GameOverChecker {
     }
 
     private hasLegalMove(board: string[]) {
-        return board.map((_, i) => i)  // use index and not piece
-        .filter(square => board[square] !== ' ') // remove empty squares
-        .filter(piece => white.test(board[piece]) ===  this.gameState.getTurn()) // include active pieces
-        .some(piece => this.moveCalculator.legalMoves(piece))
+        return board.flatMap((_, i) => this.moveCalculator.legalMoves(i))
+                    .some(() => true)
     }
 }
