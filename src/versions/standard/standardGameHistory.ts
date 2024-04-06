@@ -1,5 +1,5 @@
+import { SimpleMoveCalculator } from '../../lib/SimpleMoveCalculator';
 import { GameHistory, Move } from '../../types/types';
-import { parseDirection } from '../../lib/MoveQueue';
 
 const rookH1 = /R$/;
 const rookA1 = /R.{7}$/;
@@ -13,6 +13,8 @@ const gameHistory = {
 }
 
 export class StandardGameHistory implements GameHistory {
+
+  constructor(private simpleMoveCalculator: SimpleMoveCalculator) {}
 
   checkHistory(move: Move): boolean {
     const { id, square } = move;
@@ -36,14 +38,13 @@ export class StandardGameHistory implements GameHistory {
 
     // For pawn double moves: add the square behind to history object
     if (id === 'wPawnDoubleForward') {
-      gameHistory.enPassant = square + parseDirection('S');
+      gameHistory.enPassant = square + this.simpleMoveCalculator.parseOffset('S');
     }
 
     if (id === 'bPawnDoubleForward') {
-      gameHistory.enPassant = square + parseDirection('N');
+      gameHistory.enPassant = square + this.simpleMoveCalculator.parseOffset('N');
     }
 
-    console.log(id)
 
     if (/wk|[KQ]/.test(id)) {
       gameHistory.castle = gameHistory.castle.replace(/[KQ]/g, '');

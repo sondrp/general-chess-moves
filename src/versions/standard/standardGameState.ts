@@ -1,4 +1,4 @@
-import { PseudoMoveCalculator } from '../../lib/PseudoMoveCalculator';
+import { SimpleMoveCalculator } from '../../lib/SimpleMoveCalculator';
 import { GameState, Move } from '../../types/types';
 
 
@@ -19,7 +19,7 @@ const gameState = {
 };
 
 export class StandardGameState implements GameState {
-  constructor(private pseudoMoveCalculator: PseudoMoveCalculator) {}
+  constructor(private simpleMoveCalculator: SimpleMoveCalculator) {}
 
   changeState(move: Move): string[] {
     gameState.turn = !gameState.turn;
@@ -46,7 +46,7 @@ export class StandardGameState implements GameState {
   checkState(move: Move): boolean {
     const board = move.result.split("")
  
-    if (this.pseudoMoveCalculator.isKingInCheck(board, gameState.turn)) return false;
+    if (this.simpleMoveCalculator.isKingInCheck(board, gameState.turn)) return false;
 
     if (this.illegalCastle(move)) return false;
 
@@ -84,7 +84,7 @@ export class StandardGameState implements GameState {
     const squaresToClear = tagToCastleSquares[id];
 
     const board = result.split('');
-    const enemyCover = this.pseudoMoveCalculator.calculateTeamCover(
+    const enemyCover = this.simpleMoveCalculator.calculateTeamCover(
       board,
       !gameState.turn
     );

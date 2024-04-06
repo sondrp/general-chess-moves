@@ -1,15 +1,13 @@
 import { Action } from "../types/types";
-import { friends, enemies, never } from "../utils/regs";
+import { CoverPatterns, PathPatterns, coverPatterns, pathPatterns } from "../utils/regs";
 import { Piece } from "./Piece";
 
 
 const defaultAction: Action = {
     id: '',
     directions: [],
-    isCover: true,
-    stopBefore: friends,
-    stopAfter: enemies,
-    exclude: never,
+    path: pathPatterns.leaper,
+    cover: coverPatterns.leaper,
     boardCondition: undefined,
     replacement: undefined,
   };
@@ -52,24 +50,20 @@ export class PieceBuilder {
       return this;
     }
 
-    isCover(isCover: boolean) {
-      this.next.isCover = isCover
+    type(type: keyof PathPatterns & keyof CoverPatterns) {
+      this.next.path = pathPatterns[type]
+      this.next.cover = coverPatterns[type]
       return this
     }
-  
-    stopBefore(stopBefore: RegExp) {
-      this.next.stopBefore = stopBefore;
-      return this;
+
+    path(path: RegExp | keyof PathPatterns) {
+      this.next.path = typeof path === "string" ? pathPatterns[path] : path
+      return this
     }
-  
-    stopAfter(stopAfter: RegExp) {
-      this.next.stopAfter = stopAfter;
-      return this;
-    }
-  
-    exclude(exclude: RegExp) {
-      this.next.exclude = exclude;
-      return this;
+
+    cover(cover: RegExp | keyof CoverPatterns) {
+      this.next.cover = typeof cover === 'string' ? coverPatterns[cover] : cover 
+      return this
     }
   
     boardCondition(boardCondition: RegExp) {

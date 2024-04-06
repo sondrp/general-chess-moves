@@ -5,7 +5,7 @@ import { StandardGameState } from "../versions/standard/standardGameState";
 import { standardPieceMap } from "../versions/standard/standardPieceMap";
 import { MoveCalculator } from "./MoveCalculator";
 import { MoveExecutor } from "./MoveExecutor";
-import { PseudoMoveCalculator } from "./PseudoMoveCalculator";
+import { SimpleMoveCalculator } from "./SimpleMoveCalculator";
 
 type FactoryResult = {
   moveCalculator: MoveCalculator;
@@ -18,18 +18,18 @@ export class GameFactory {
   create(version: string): FactoryResult {
     let gameState: GameState
     let gameHistory: GameHistory
-    let pseudoMoveCalculator: PseudoMoveCalculator
+    let simpleMoveCalculator: SimpleMoveCalculator
 
 
     if (version === 'standard') {
-      pseudoMoveCalculator = new PseudoMoveCalculator(standardPieceMap) 
-      gameState = new StandardGameState(pseudoMoveCalculator)
-      gameHistory = new StandardGameHistory()
+      simpleMoveCalculator = new SimpleMoveCalculator(standardPieceMap) 
+      gameState = new StandardGameState(simpleMoveCalculator)
+      gameHistory = new StandardGameHistory(simpleMoveCalculator)
     } else {
       throw Error(`Game factory does not support ${version} currently`)
     }
     
-    const moveCalculator = new MoveCalculator(pseudoMoveCalculator, gameState, gameHistory);
+    const moveCalculator = new MoveCalculator(simpleMoveCalculator, gameState, gameHistory);
     const gameOverChecker = new StandardGameOverChecker(moveCalculator, gameState)
     const moveExecutor = new MoveExecutor(gameState, gameHistory)
     return { moveCalculator, moveExecutor, gameOverChecker };
