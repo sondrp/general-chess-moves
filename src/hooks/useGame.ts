@@ -10,6 +10,7 @@ export const useGame = (version: string) => {
 
   const [lastClicked, setLastClicked] = useState(-1);
   const [legalMoves, setLegalMoves] = useState<Move[]>([]);
+  const [collectSquares, setCollectSquares] = useState<number[]>([])
 
   const [board, setBoard] = useState(moveExecutor.getBoard())
 
@@ -24,6 +25,7 @@ export const useGame = (version: string) => {
   }
 
   const handleSquareClick = (square: number): void => {
+    setCollectSquares([...collectSquares, square])
     setLastClicked(square);
 
     
@@ -41,5 +43,5 @@ export const useGame = (version: string) => {
     setLegalMoves(newLegalMoves);
   };
   
-  return { handleSquareClick, legalMoves, lastClicked, board, setBoard: handleExternalBoardChange };
+  return { handleSquareClick, legalMoves, lastClicked, board, setBoard: handleExternalBoardChange, collectSquares, setCollectSquares };
 };

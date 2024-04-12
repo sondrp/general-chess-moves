@@ -9,7 +9,8 @@ import { useGame } from './hooks/useGame';
 
 function App() {
 
-  const { handleSquareClick, legalMoves, lastClicked, board, setBoard } =
+  const { handleSquareClick, legalMoves, lastClicked, board, setBoard, collectSquares, setCollectSquares
+   } =
     useGame('standard');
     
 
@@ -24,7 +25,7 @@ function App() {
           moves={legalMoves}
         />
         <div>
-          <BehaviourTextArea />
+          <BehaviourTextArea collectSquares={collectSquares} setCollectSquares={setCollectSquares} />
           <PieceSelect
             selectedSquare={lastClicked}
             handleSelect={(piece: string) => console.log(piece)}
