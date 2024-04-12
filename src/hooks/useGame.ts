@@ -26,12 +26,13 @@ export const useGame = (version: string) => {
   const handleSquareClick = (square: number): void => {
     setLastClicked(square);
 
+    
     const newBoard = moveExecutor.execute(legalMoves, square)
-
+    
     if (newBoard) {
       setLegalMoves([])
       setBoard(newBoard)
-
+      
       gameOverChecker.checkGameOver(newBoard)
       return
     }

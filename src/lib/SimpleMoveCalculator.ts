@@ -109,7 +109,7 @@ export class SimpleMoveCalculator {
       .filter((i) => board[i] !== ' ') // allow only occupied squares
       .filter((piece) => white.test(board[piece]) !== whiteKing) // pieces of opposite colour to the king
       .flatMap((enemy) => this.calculateSimple(board, enemy))
-      .some((move) => move.result.includes(kingToLookFor));
+      .some((move) => !move.result.includes(kingToLookFor));
   }
 
   private generateSquares(
