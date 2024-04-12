@@ -25,7 +25,7 @@ function App() {
           moves={legalMoves}
         />
         <div>
-          <BehaviourTextArea collectSquares={collectSquares} setCollectSquares={setCollectSquares} />
+          <BehaviourTextArea legalMoves={legalMoves.map(move => move.square)} collectSquares={collectSquares} setCollectSquares={setCollectSquares} />
           <PieceSelect
             selectedSquare={lastClicked}
             handleSelect={(piece: string) => console.log(piece)}
