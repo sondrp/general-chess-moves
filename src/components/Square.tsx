@@ -14,7 +14,7 @@ export default function Square(props: PieceProps) {
 
   const x = index % 8;
   const y = ~~(index / 8);
-  const isWhite = index % 2 === y % 2;
+  const isWhite = x % 2 === y % 2;
 
   return (
     <button

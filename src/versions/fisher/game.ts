@@ -1,17 +1,8 @@
-import { SimpleMoveCalculator } from '../../lib/SimpleMoveCalculator';
 import { GameState, Move } from '../../types/types';
 
-const blackKing = /k/;
-const whiteKing = /K/;
 const white = /[A-Z]/;
 
-// These squares must be dynamically generated in fisher random
-const tagToCastleSquares: Record<string, number[]> = {
-  q: [2, 3, 4],
-  k: [4, 5, 6],
-  Q: [58, 59, 60],
-  K: [60, 61, 62],
-};
+
 
 const randint = (min: number, max: number) =>
   Math.floor(Math.random() * (max - min + 1)) + min;
@@ -64,7 +55,7 @@ const gameState = {
 };
 
 export class FisherGameState implements GameState {
-  constructor(private moveCalculator: SimpleMoveCalculator) {
+  constructor() {
     const blackSetup = initFisher();
     const whiteSetup = blackSetup.map((piece) => piece.toUpperCase());
 
@@ -92,7 +83,7 @@ export class FisherGameState implements GameState {
   }
 
   /* Confirms that a move does not break a game specific rule. */
-  checkState(move: Move): boolean {
+  checkState(_move: Move): boolean {
     //if (this.isKingInCheck(move)) return false;
 
     //if (this.illegalCastle(move)) return false;

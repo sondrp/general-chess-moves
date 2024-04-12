@@ -1,7 +1,6 @@
 import { MoveCalculator } from "../../lib/MoveCalculator";
 import { GameOverChecker, GameState } from "../../types/types";
 
-const white = /[A-Z]/;
 
 export class StandardGameOverChecker implements GameOverChecker {
 

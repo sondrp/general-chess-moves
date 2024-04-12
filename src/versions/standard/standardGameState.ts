@@ -1,7 +1,6 @@
 import { SimpleMoveCalculator } from '../../lib/SimpleMoveCalculator';
 import { GameState, Move } from '../../types/types';
 
-
 const white = /[A-Z]/;
 
 // These squares must not be covered by the enemy when castleing
@@ -24,10 +23,8 @@ export class StandardGameState implements GameState {
   changeState(move: Move): string[] {
     gameState.turn = !gameState.turn;
 
-
     const board = move.result.split('');
 
-    
     // Promote pawn should it reach the final rank
     const { square, id } = move;
     if (id === 'P' && ~~(square / 8) === 0) {
@@ -38,15 +35,16 @@ export class StandardGameState implements GameState {
       board[square] = 'q';
     }
 
-    gameState.board = board.join("");
+    gameState.board = board.join('');
     return board;
   }
 
   /* Confirms that a move does not break a game specific rule. */
   checkState(move: Move): boolean {
-    const board = move.result.split("")
- 
-    if (this.simpleMoveCalculator.isKingInCheck(board, gameState.turn)) return false;
+    const board = move.result.split('');
+
+    if (this.simpleMoveCalculator.isKingInCheck(board, gameState.turn))
+      return false;
 
     if (this.illegalCastle(move)) return false;
 
@@ -58,7 +56,7 @@ export class StandardGameState implements GameState {
   }
 
   setBoard(board: string[]): void {
-    gameState.board = board.join("")
+    gameState.board = board.join('');
   }
 
   getBoardAsString() {
@@ -70,9 +68,8 @@ export class StandardGameState implements GameState {
   }
 
   getTurn(): boolean {
-    return gameState.turn
+    return gameState.turn;
   }
-
 
   /* Return TRUE only if the move is attempting illegal castle */
   private illegalCastle(move: Move): boolean {
@@ -82,14 +79,10 @@ export class StandardGameState implements GameState {
     if (!/^[KQkq]$/.test(id)) return false; // no filter if tag is unrelated
 
     const squaresToClear = tagToCastleSquares[id];
-
     const board = result.split('');
-    const enemyCover = this.simpleMoveCalculator.calculateTeamCover(
-      board,
-      !gameState.turn
-    );
 
-    // if enemy covers relevant square, do not castle
-    return enemyCover.some((square) => squaresToClear.includes(square));
+    return this.simpleMoveCalculator
+      .calculateTeamCover(board, !gameState.turn)
+      .some((square) => squaresToClear.includes(square));
   }
 }
